@@ -1,0 +1,61 @@
+\section{Networking}
+Vengono effettuate delle syscall, per eseguire operazioni necessario all'invio di dati.
+Per esempio la syscall send, copia dalla ram una certa sezione di memoria nel NIC,
+che verrà inviata in rete.
+???
+
+\subsection{TCP/UDP}
+Il protocollo TCP garantisce l'invio del messaggio, dato che attende una risposta
+da parte del ricevente.
+
+Il protocollo UDP invia datagrammi, ma non si è certi se la ricezione è avvenuta.
+\subsubsection{Device driver}
+E' un modulo che gestisce le rusirse fusuche dei vari moduli, tra cui NIC,
+gestiscono le interruzioni del dispositivo.
+
+\subsection{Invio}
+Il DMA presente nel NIC è il componente che accede alla memoria.
+
+L'unità di gestione della memoria MMU,
+permette di utilizzare indirizzi virtuali in indirizzi fisici,
+quindi mentre il processore utilizza indirizzi virtuali,
+il DMA del NIC utilizzerà indirizzi fisici.
+
+Interrupt, buffer
+\subsection{Ricezione}
+Per la ricezione di pacchetti devono essere sempre disponibili dei buffer,
+su cui NIC può scrivere una volta ricevuto il pacchetto.
+
+Il pacchetto in arrivo viene processato dal NIC quindi con il DMA inserito nel buffer,
+quindi un interrupt crea nuovi buffer per possibili nuovi messaggi,
+quindi il sistema legge il buffer copiandolo nel buffer dell'applicazione,
+direzionando quindi l'output verso l'utente corretto,
+quindi il buffer di ricezione può essere riutilizzato per nuovi pacchetti.
+
+Il comportamento standard di un applicazione che implementa networking è un
+meccanismo bloccante per cui l'applicazione rimane in attesa fintanto che il
+buffer non è stato scritto al suo interno.
+
+\section{trasmissione di datu su bus ring based}
+La problematica principale del DMA di tipo bus mastering è che deve essere
+programmato in anticipo, ovvero è limitata da quanti buffer sono stati programmati
+per essere utilizzati dal DMA ed è dipendente dalla velocità del processore a
+liberare il buffer, per cui fintanto che il DMA è occupato, verrano persi i
+dati nel frattempo ricevuti dalla rete.
+
+
+Quindi si implementa una struttura dati più complicata, integrando una piccola
+CPU all'interno della NIC (ring based).
+\subsection{Ring}
+Il ring è composto da un anello contenente più di un buffer, e due puntatori,
+un puntatore di inizio ed uno di fine gestiti da due processori diversi;
+la CPU si occupa di aggiungere elementi all'interno del ring quindi gestirà
+l'indice di fine, il puntatore al primo elemento viene gestito dal processore
+all'interno della NIC.
+SI ottiene una coda di buffer che si possono aggiungere o togliere a seconda
+se si sta gestendo un invio o ricezione di dati.
+
+Quindi la NIC legge i buffer in memoria e usa un flag per impostare se il buffer
+è libero oppure se deve essere processato.
+Quindi il'unica comunicazione tra processore e DMA è la comunicazione della 
+quantità di buffer che dovranno essere utilizzati al DMA.
