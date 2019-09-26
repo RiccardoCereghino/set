@@ -1,3 +1,15 @@
+\section{Accenni al funzionamento di un calcolatore}
+Un calcolatore è generalmente composto da:
+\begin{itemize}
+  \item la $CPU$, esegue le istruzioni, tiene in memoria ($Instruction Register$)
+    l'istruzione corrente e la posizione dell'istruzione nella RAM ($P.C.$);
+  \item la $RAM$, tiene in memoria le istruzioni da eseguire, certe sezioni
+    sono riservate per specifiche funzioni ($stack$, $SP$, $BP$);
+  \item dei moduli, come un disco fisso o altro;
+  \item la $NIC$, che permette di inviare e ricevere pacchetti in rete.
+\end{itemize}
+
+\subsection{Registri}
 \section{Networking}
 Vengono effettuate delle syscall, per eseguire operazioni necessario all'invio di dati.
 Per esempio la syscall send, copia dalla ram una certa sezione di memoria nel NIC,
@@ -59,3 +71,28 @@ Quindi la NIC legge i buffer in memoria e usa un flag per impostare se il buffer
 è libero oppure se deve essere processato.
 Quindi il'unica comunicazione tra processore e DMA è la comunicazione della 
 quantità di buffer che dovranno essere utilizzati al DMA.
+
+\subsection{Commutazione}
+Si rende necessario, per una questione di efficienza, un circuito fisico $R$
+attraverso cui trasmettere i pacchetti.
+
+I pacchetti sono inviati come datagrammi, e nella struttura includono il
+destinatario e le informazioni trasmesse.
+
+\subsubsection{Workflow}
+La macchina che vuole inviare un datagramma \emph{host} compila e viene mandato
+dal buffer in locale al buffer di ricezione di $R1$(router), il cui compito è di
+leggere il datagramma, ricavarne il destinatario, quindi di inviarlo, la
+macchina può quindi cancellare dal buffer il dato.
+
+La parte ricevente ($R2$) copia il datagramma nel suo buffer di ricezione,
+quindi $R1$ può rimuovere dal proprio buffer il datagramma.
+Quindi $R2$ invia il datagramma all'effettivo destinatario con un altro
+\emph{store and forward}.
+
+Ogni passaggio di trasmissione del datagramma viene chiamato \emph{hop}.
+
+\subsection{Routing}
+Identifichiamo per il processo di routing lo \emph{host}, gli endpoint della
+trasmissione di pacchetti e i \emph{router}, calcolatori.
+Più router possono essere collegati tra loro.
