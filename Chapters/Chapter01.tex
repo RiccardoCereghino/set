@@ -96,3 +96,65 @@ Ogni passaggio di trasmissione del datagramma viene chiamato \emph{hop}.
 Identifichiamo per il processo di routing lo \emph{host}, gli endpoint della
 trasmissione di pacchetti e i \emph{router}, calcolatori.
 Più router possono essere collegati tra loro.
+
+\subsection{Internet protocol stack}
+\begin{enumerate}
+  \item Physical
+  \item Datalink
+  \item Network
+  \item Transport
+  \item Application
+\end{enumerate}
+
+\subsubsection{Protocollo fisico}
+L'unico protocollo fisico sopravissuto ed in uso è il protocollo ethernet.
+
+Ogni richiesta sarà composta da: header, payload e trailer.
+
+Il protocollo definisce che ad ogni host venga assegnato un indirizzo
+\emph{MAC}, composto da $6byte$.
+
+L'header conterrà come dati gli indirizzi IP e le porte dei nodi comunicanti.
+
+Il trailer è necessario per il controllo di integrità nella rete ethernet, l'
+algoritmo utilizzato è \textbf{CRC32}.
+
+\emph{Datalink utilizza le stesse modilià di funzionamento del protocollo fisico}.
+
+\subsubsection{Network protocol}
+Il protocollo network utilizza come gestore degli indirizzi i protocolli
+\emph{IPv4 e IPv6}.
+Ipv4 utilizza 4 byte per il funzionamento, significa che può gestire fino a 
+circa $4$ miliardi di indirizzi, mentre ipv6 ne può utilizzare molti di più.
+
+Gli indirizzi \textbf{IP} sono utilizzati per essere associati agli indirizzi
+\textbf{MAC} nel network.
+
+IL \emph{TTL} (Time To Live) definisce da quanto tempo un pacchetto è nel
+network.
+
+\emph{RFC} (Remote Function Call) cerca prima di chiamare le versioni dei
+protocolli più recenti prima di doverne eseguire uno più vecchio.
+
+\subsubsection{Trasporto}
+Vengono utilizzato i protocolli \emph{UDP} e \emph{TCP}.
+
+I primi sviluppatori dei protocollo di comunicazione non avevano la possibilità
+di interagire direttamente con i sistemi operativi, motivo per cui si è dovuto
+introdurre il concetto di \textbf{porta di comunicazione}, un numero intero
+in $16bit$, con cui si identifica univocamente un numero di una porta ad una
+tipologia di applicazione.
+
+Le porte da $0$ a $1023$ sono state dedicate ai protocolli internet ed alle
+applicazioni più comuni, un altra serie di porte sono sempre utilizzate per
+il networking  mentre le restanti sono le così dette porte effimere che vengono
+utilizzate dalle applicazioni in locale.
+
+Le porte da $0$ a $1023$ sono state dedicate ai protocolli internet ed alle
+applicazioni più comuni, un altra serie di porte sono sempre utilizzate per
+il networking  mentre le restanti sono le così dette porte effimere che vengono
+utilizzate dalle applicazioni in locale.
+
+Quindi se la porta è la parte che un calcolatore espone ad internet, il
+\emph{socket} è il corrispettivo componente nel nodo in locale, così da
+associare alla richiesta una macchina ed applicazione in particolare.
