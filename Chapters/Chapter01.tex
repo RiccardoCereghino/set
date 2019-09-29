@@ -1,4 +1,4 @@
-\section{Accenni al funzionamento di un calcolatore}
+\chapter{Accenni al funzionamento di un calcolatore}
 Un calcolatore è generalmente composto da:
 \begin{itemize}
   \item la $CPU$, esegue le istruzioni, tiene in memoria ($Instruction Register$)
@@ -9,56 +9,63 @@ Un calcolatore è generalmente composto da:
   \item la $NIC$, che permette di inviare e ricevere pacchetti in rete.
 \end{itemize}
 
-\subsection{Registri}
 \section{Networking}
-Vengono effettuate delle syscall, per eseguire operazioni necessario all'invio di dati.
-Per esempio la syscall send, copia dalla ram una certa sezione di memoria nel NIC,
-che verrà inviata in rete.
-???
+Vengono effettuate delle syscall, per eseguire operazioni necessario all'invio
+di dati.
+Per esempio la syscall send, copia dalla ram una certa sezione di memoria nel
+NIC, che verrà inviata in rete.
 
 \subsection{TCP/UDP}
-Il protocollo TCP garantisce l'invio del messaggio, dato che attende una risposta
-da parte del ricevente.
+Il protocollo TCP garantisce l'invio del messaggio, dato che attende una
+risposta da parte del ricevente.
+Il protocollo UDP invia datagrammi, ma non si è certi se la ricezione è
+avvenuta.
 
-Il protocollo UDP invia datagrammi, ma non si è certi se la ricezione è avvenuta.
-\subsubsection{Device driver}
-E' un modulo che gestisce le rusirse fusuche dei vari moduli, tra cui NIC,
+\subsection{Device driver}
+E' un modulo che gestisce le risore fisiche dei vari moduli, tra cui NIC,
 gestiscono le interruzioni del dispositivo.
 
-\subsection{Invio}
+\section{Trasmissione di dati}
+\subsection{Invio di dati}
 Il DMA presente nel NIC è il componente che accede alla memoria.
 
-L'unità di gestione della memoria MMU,
-permette di utilizzare indirizzi virtuali in indirizzi fisici,
-quindi mentre il processore utilizza indirizzi virtuali,
-il DMA del NIC utilizzerà indirizzi fisici.
+La maggior parte dei calcolatori include l'unità di gestione della memoria MMU,
+che permette al processore di gestire indirizzi virtuali per ottenere una
+maggiore efficienza, ma questo dispositivo è esclusivo del processore, motivo
+per cui il DMA del NIC utilizzerà indirizzi fisici.
 
-Interrupt, buffer
-\subsection{Ricezione}
-Per la ricezione di pacchetti devono essere sempre disponibili dei buffer,
-su cui NIC può scrivere una volta ricevuto il pacchetto.
+Delle porzioni di memoria della RAM saranno destinate ad essere utilizzate per
+i \emph{buffer}, ovvero delle aree dove NIC può immagazzinare i dati da inviare
+o da ricevere.
 
-Il pacchetto in arrivo viene processato dal NIC quindi con il DMA inserito nel buffer,
-quindi un interrupt crea nuovi buffer per possibili nuovi messaggi,
-quindi il sistema legge il buffer copiandolo nel buffer dell'applicazione,
-direzionando quindi l'output verso l'utente corretto,
-quindi il buffer di ricezione può essere riutilizzato per nuovi pacchetti.
+Al momento dell'invio di un datagramma, esso verà salvato in un buffer, quindi
+inviato in rete appena possibile, quindi cancellato dalla memoria.
 
-Il comportamento standard di un applicazione che implementa networking è un
-meccanismo bloccante per cui l'applicazione rimane in attesa fintanto che il
-buffer non è stato scritto al suo interno.
+\subsection{Ricezione di dati}
+Per la ricezione di datagrammi dei buffer devono essere sempre disponibili,
+cosicchè NIC possa utilizzarli una volta ricevuto il pacchetto.
 
-\section{trasmissione di datu su bus ring based}
-La problematica principale del DMA di tipo bus mastering è che deve essere
-programmato in anticipo, ovvero è limitata da quanti buffer sono stati programmati
-per essere utilizzati dal DMA ed è dipendente dalla velocità del processore a
-liberare il buffer, per cui fintanto che il DMA è occupato, verrano persi i
-dati nel frattempo ricevuti dalla rete.
+Il datagramma ricevuto sarà inserito dal DMA in un buffer, un interrupt nel
+frattempo creeà nuovi buffer per possibili nuovi messaggi, quindi il sistema
+legge il buffer copiandolo nel buffer dell'applicazione, direzionando l'output
+verso l'utente corretto, quindi la memoria viene liberata.
 
+Il comportamento standard di un applicazione che implementa networking 
+implementa un meccanismo bloccante per cui l'applicazione rimane in attesa
+fintanto che il buffer non è stato scritto al suo interno.
 
-Quindi si implementa una struttura dati più complicata, integrando una piccola
-CPU all'interno della NIC (ring based).
-\subsection{Ring}
+\subsection{Trasmissione di dati su bus ring based}
+La problematica principale del DMA di tipo \emph{bus mastering} è la
+necessità di dover programmare in anticipo i buffer allocati, limitandone
+la capacità.
+
+Fintanto che il DMA è impegnato in un operazione perchè in attesa del
+processore verrano persi i dati nel frattempo ricevuti dalla rete.
+
+Per risolvere questo problema si implementa una struttura dati più complicata,
+integrando una piccola CPU all'interno della NIC (ring based).
+
+\subsubsection{Ring}
 Il ring è composto da un anello contenente più di un buffer, e due puntatori,
 un puntatore di inizio ed uno di fine gestiti da due processori diversi;
 la CPU si occupa di aggiungere elementi all'interno del ring quindi gestirà
@@ -67,9 +74,10 @@ all'interno della NIC.
 SI ottiene una coda di buffer che si possono aggiungere o togliere a seconda
 se si sta gestendo un invio o ricezione di dati.
 
-Quindi la NIC legge i buffer in memoria e usa un flag per impostare se il buffer
-è libero oppure se deve essere processato.
-Quindi il'unica comunicazione tra processore e DMA è la comunicazione della 
+Quindi la NIC legge i buffer in memoria e usa un flag per impostare se il
+buffer è libero oppure se deve essere processato.
+
+L'unico tipo di comunicazione tra processore e DMA è la trasmissione della 
 quantità di buffer che dovranno essere utilizzati al DMA.
 
 \subsection{Commutazione}
@@ -79,11 +87,10 @@ attraverso cui trasmettere i pacchetti.
 I pacchetti sono inviati come datagrammi, e nella struttura includono il
 destinatario e le informazioni trasmesse.
 
-\subsubsection{Workflow}
-La macchina che vuole inviare un datagramma \emph{host} compila e viene mandato
-dal buffer in locale al buffer di ricezione di $R1$(router), il cui compito è di
-leggere il datagramma, ricavarne il destinatario, quindi di inviarlo, la
-macchina può quindi cancellare dal buffer il dato.
+\subsection{Dataflow}
+L' \emph{host} compila ed invia il buffer in locale al buffer di ricezione di
+$R1$(router), il cui compito è di leggere il datagramma, ricavarne il
+destinatario, quindi di inviarlo: l'hos può quindi cancellare il buffer.
 
 La parte ricevente ($R2$) copia il datagramma nel suo buffer di ricezione,
 quindi $R1$ può rimuovere dal proprio buffer il datagramma.
@@ -93,7 +100,7 @@ Quindi $R2$ invia il datagramma all'effettivo destinatario con un altro
 Ogni passaggio di trasmissione del datagramma viene chiamato \emph{hop}.
 
 \subsection{Routing}
-Identifichiamo per il processo di routing lo \emph{host}, gli endpoint della
+Identifichiamo per il processo di routing l' \emph{host}, gli endpoint della
 trasmissione di pacchetti e i \emph{router}, calcolatori.
 Più router possono essere collegati tra loro.
 
@@ -119,12 +126,13 @@ L'header conterrà come dati gli indirizzi IP e le porte dei nodi comunicanti.
 Il trailer è necessario per il controllo di integrità nella rete ethernet, l'
 algoritmo utilizzato è \textbf{CRC32}.
 
-\emph{Datalink utilizza le stesse modilià di funzionamento del protocollo fisico}.
+\emph{Il datalink utilizza le stesse modilità di funzionamento del protocollo
+fisico}.
 
 \subsubsection{Network protocol}
 Il protocollo network utilizza come gestore degli indirizzi i protocolli
 \emph{IPv4 e IPv6}.
-Ipv4 utilizza 4 byte per il funzionamento, significa che può gestire fino a 
+Ipv4 utilizza $4byte$ per il funzionamento, significa che può gestire fino a 
 circa $4$ miliardi di indirizzi, mentre ipv6 ne può utilizzare molti di più.
 
 Gli indirizzi \textbf{IP} sono utilizzati per essere associati agli indirizzi
@@ -144,11 +152,6 @@ di interagire direttamente con i sistemi operativi, motivo per cui si è dovuto
 introdurre il concetto di \textbf{porta di comunicazione}, un numero intero
 in $16bit$, con cui si identifica univocamente un numero di una porta ad una
 tipologia di applicazione.
-
-Le porte da $0$ a $1023$ sono state dedicate ai protocolli internet ed alle
-applicazioni più comuni, un altra serie di porte sono sempre utilizzate per
-il networking  mentre le restanti sono le così dette porte effimere che vengono
-utilizzate dalle applicazioni in locale.
 
 Le porte da $0$ a $1023$ sono state dedicate ai protocolli internet ed alle
 applicazioni più comuni, un altra serie di porte sono sempre utilizzate per

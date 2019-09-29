@@ -88,8 +88,6 @@
       <file>set-blx.bib</file>
     </requires>
     <requires type="editable">
-      <file>Bibliography.bib</file>
-      <file>AMiede_Publications.bib</file>
     </requires>
     <requires type="static">
       <file>biblatex.bst</file>

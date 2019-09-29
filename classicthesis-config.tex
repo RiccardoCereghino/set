@@ -47,17 +47,17 @@
 % ****************************************************************************************************
 \newcommand{\myTitle}{Sistemi e trasmissione delle informazioni\xspace}
 \newcommand{\mySubtitle}{Appunti\xspace}
-\newcommand{\myDegree}{a\xspace}
+\newcommand{\myDegree}{nil\xspace}
 \newcommand{\myName}{Riccardo Cereghino \xspace}
 \newcommand{\myProf}{Put name here\xspace}
 \newcommand{\myOtherProf}{Put name here\xspace}
 \newcommand{\mySupervisor}{Put name here\xspace}
 \newcommand{\myFaculty}{Informatica\xspace}
 \newcommand{\myDepartment}{DIBRIS\xspace}
-\newcommand{\myUni}{Put data here\xspace}
-\newcommand{\myLocation}{Saarbrücken\xspace}
-\newcommand{\myTime}{June 2018\xspace}
-\newcommand{\myVersion}{a\classicthesis}
+\newcommand{\myUni}{Università di Genova\xspace}
+\newcommand{\myLocation}{Genova\xspace}
+\newcommand{\myTime}{Settembre 2019\xspace}
+\newcommand{\myVersion}{0.0.1\classicthesis}
 
 % ********************************************************************
 % Setup, finetuning, and useful commands
@@ -162,6 +162,39 @@
 % ****************************************************************************************************
 % 6. Last calls before the bar closes
 % ****************************************************************************************************
+\usepackage{amssymb}
+\usepackage{ntheorem}
+
+\let\numberset\mathbb
+\newcommand{\N}{\numberset{N}}
+\newcommand{\Z}{\numberset{Z}}
+\newcommand{\Q}{\numberset{Q}}
+\newcommand{\R}{\numberset{R}}
+\newcommand{\C}{\numberset{C}}
+\newcommand{\U}{\numberset{U}}
+\newcommand{\I}{\numberset{I}}
+\newcommand{\PP}{\numberset{P}}
+\newcommand{\CC}{\complement}
+\newcommand{\dom}{\text{dom }}
+\newcommand{\im}{\text{Im }}
+\newcommand{\foi}{\text{f.i.}}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\cc}{\mathcal{C}}
+\newcommand{\dd}{\mathrm{d}}
+
+\usepackage{float}
+\usepackage{wrapfig}
+
+\usepackage{import}
+\usepackage{xifthen}
+\usepackage{pdfpages}
+\usepackage{transparent}
+
+\newcommand{\incfig}[1]{%
+    \def\svgwidth{\columnwidth}
+    \import{./figures/}{#1.pdf_tex}
+}
+\pdfsuppresswarningpagegroup=1 
 % ********************************************************************
 % Her Majesty herself
 % ********************************************************************
