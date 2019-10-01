@@ -104,7 +104,7 @@ Identifichiamo per il processo di routing l' \emph{host}, gli endpoint della
 trasmissione di pacchetti e i \emph{router}, calcolatori.
 Più router possono essere collegati tra loro.
 
-\subsection{Internet protocol stack}
+\section{Internet protocol stack}
 \begin{enumerate}
   \item Physical
   \item Datalink
@@ -113,7 +113,7 @@ Più router possono essere collegati tra loro.
   \item Application
 \end{enumerate}
 
-\subsubsection{Protocollo fisico}
+\subsection{Protocollo fisico}
 L'unico protocollo fisico sopravissuto ed in uso è il protocollo ethernet.
 
 Ogni richiesta sarà composta da: header, payload e trailer.
@@ -129,25 +129,13 @@ algoritmo utilizzato è \textbf{CRC32}.
 \emph{Il datalink utilizza le stesse modilità di funzionamento del protocollo
 fisico}.
 
-\subsubsection{Network protocol}
+\subsection{Network protocol}
 Il protocollo network utilizza come gestore degli indirizzi i protocolli
 \emph{IPv4 e IPv6}.
 Ipv4 utilizza $4byte$ per il funzionamento, significa che può gestire fino a 
 circa $4$ miliardi di indirizzi, mentre ipv6 ne può utilizzare molti di più.
 
-Gli indirizzi \textbf{IP} sono utilizzati per essere associati agli indirizzi
-\textbf{MAC} nel network.
-
-IL \emph{TTL} (Time To Live) definisce da quanto tempo un pacchetto è nel
-network.
-
-\emph{RFC} (Remote Function Call) cerca prima di chiamare le versioni dei
-protocolli più recenti prima di doverne eseguire uno più vecchio.
-
-\subsubsection{Trasporto}
-Vengono utilizzato i protocolli \emph{UDP} e \emph{TCP}.
-
-I primi sviluppatori dei protocollo di comunicazione non avevano la possibilità
+I primi sviluppatori dei protocolli non avevano la possibilità
 di interagire direttamente con i sistemi operativi, motivo per cui si è dovuto
 introdurre il concetto di \textbf{porta di comunicazione}, un numero intero
 in $16bit$, con cui si identifica univocamente un numero di una porta ad una
@@ -161,3 +149,76 @@ utilizzate dalle applicazioni in locale.
 Quindi se la porta è la parte che un calcolatore espone ad internet, il
 \emph{socket} è il corrispettivo componente nel nodo in locale, così da
 associare alla richiesta una macchina ed applicazione in particolare.
+
+
+Sono usati i protocolli \emph{UDP} e \emph{text}
+Il protocollo \emph{UDP} invia datagrammi mentre il protocollo \emph{TCP}
+permette di implementare una modalità di comunicazione più avanzata, di tipo
+\emph{stream}, che permette di interagire con l'interfaccia di comunicazione
+come se fossero file.
+
+Gli indirizzi \textbf{IP} sono utilizzati per essere associati agli indirizzi
+\textbf{MAC} nel network.
+
+IL \emph{TTL} (Time To Live) definisce da quanto tempo un pacchetto è nel
+network.
+
+\emph{RFC} (Remote Function Call) cerca prima di chiamare le versioni dei
+protocolli più recenti prima di doverne eseguire uno più vecchio.
+
+\subsubsection{Indirizzi}
+Ad ogni macchina corrisponde un IP ($IPv4$ o $IPv6$)
+\begin{figure}[H]
+    \centering
+    \incfig{indirizzi}
+    \caption{indirizzi}
+    \label{fig:indirizzi}
+\end{figure}
+
+Un indirizzo $IPv4$ in default è composto da:
+\begin{itemize}
+  \item $29bit$ dedicati al network;
+  \item $3bit$ dedicati all'host.
+\end{itemize}
+Per ovviare a problemi di carenza di indirizzi IP, si introduce il concetto
+di \emph{NETMASK}, una parola composta da una serie di $1$ ed una di $0$, gli
+$1$ rappresentano quanti bit sono dedicati al network, gli $0$ per l'host.
+
+\paragraph{Indirizzi privati}
+Sono definiti nel protocollo \emph{RFC 1918} dichiara che un indirizzo
+\textbf{IPv4} deve essere composto da $4$ numeri decimali seguiti da punto,
+inoltre dichiara che gli indirizzi che cominciano con $10.$ appartengono alla
+\emph{classe A}, questi indirizzi sono i cosiddetti indirizzi privati,
+utilizzabili solo in \textbf{LAN}.
+
+Gli indirizzi di classe \textbf{B} cominciano da $192.168.0.0$ per arrivare
+fino $192.168.255.255$, sono sempre indirizzi privati.
+
+
+Si può configurare il router per usare il \textbf{NAT} (Network Access
+translator), con lo scopo di assegnare due indirizzi IP allo stesso router,
+con lo scopo di esporne uno alla rete locale e l'altro a quella internet.
+
+Con il NAT è possibile convertire indirizzi pubblici in indirizzi privati,
+direzionando i messaggio alla macchina corretta sostituendo il proprio
+indirizzo alla richiesta assegnando una porta libera.
+
+\subsection{Trasporto}
+Vengono utilizzato i protocolli \emph{UDP} e \emph{TCP}.
+
+Il trasporto comincia con l'invio di un messaggio \textbf{SYN} (accompagnato
+da \textbf{SEQ}), all'arrivo
+il server risponde con un messaggio che viene chiamato \textbf{SYN-ACK}, la
+\textbf{SEQ} e la \textbf{ACK};
+quindi l'host invia un uteriore messaggio chiamato \textbf{ACK}, oltre che
+i dati.
+
+L'header TCP contiene una serie di informazioni tra le quali i \textbf{FLAG}
+SYN e ACK oltre che la porta sorgente (\textbf{SPORT}) e di destinazione
+(\textbf{DPORT}).
+
+
+Vengono utilizzate $2$ parole, la \textbf{SEQ} e la \textbf{ACK}, permettono
+la di realizzare l'astrazione dello stream di byte; questi numeri per motivi
+di sicurezza non partono da $0$, ma da un valore casuale; lo scopo della
+prima squenza di passaggi è di scambiare queste informazioni.
