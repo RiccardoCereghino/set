@@ -69,7 +69,7 @@
 %*******************************************************
 %\include{FrontBackmatter/DirtyTitlepage}
 \include{FrontBackmatter/Titlepage}
-%\include{FrontBackmatter/Titleback}
+\include{FrontBackmatter/Titleback}
 %\cleardoublepage\include{FrontBackmatter/Dedication}
 %\cleardoublepage\include{FrontBackmatter/Foreword}
 %\cleardoublepage\include{FrontBackmatter/Abstract}
@@ -87,6 +87,7 @@
 \cleardoublepage
 \part{Reti di calcolatori}\label{pt:intro}
 \include{Chapters/Chapter01}
+\part{Sistemi operativi}
 \include{Chapters/Chapter02}
 %\cleardoublepage
 %\ctparttext{You can put some informational part preamble text here.
@@ -103,10 +104,10 @@
 % ********************************************************************
 % Backmatter
 %*******************************************************
-%\appendix
+\appendix
 \renewcommand{\thechapter}{\alph{chapter}}
 \cleardoublepage
-\part{Appendix}
+\part{Utilità}
 \include{Chapters/Chapter0A}
 %********************************************************************
 % Other Stuff in the Back
