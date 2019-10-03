@@ -204,7 +204,15 @@ direzionando i messaggio alla macchina corretta sostituendo il proprio
 indirizzo alla richiesta assegnando una porta libera.
 
 \subsection{Trasporto}
-Vengono utilizzato i protocolli \emph{UDP} e \emph{TCP}.
+Vengono utilizzato i protocolli \emph{UDP} e \emph{TCP} e la tecnica della
+\emph{3 way handshake}.
+
+\begin{figure}[ht]
+    \centering
+    \incfig{3some}
+    \caption{Three way handshake}
+    \label{fig:3some}
+\end{figure}
 
 Il trasporto comincia con l'invio di un messaggio \textbf{SYN} (accompagnato
 da \textbf{SEQ}), all'arrivo

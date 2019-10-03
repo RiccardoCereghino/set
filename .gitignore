@@ -1,3 +1,7 @@
 session.vim
 *.aux
 */*.aux
+
+set.synctex.gz
+
+set.synctex(busy)
