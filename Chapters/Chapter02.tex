@@ -6,10 +6,67 @@
     \label{fig:struttura}
 \end{figure}
 
-\section{CPU virtualizzata}
-\lstinputlisting[caption=Dimostrazione della virtualizzazione della CPU]{listings/cpu.c}
+Lo scopo di questa sezione è di virtualizzare le componenti fisiche di un
+calcolatore per renderne più facile l'utilizzo.
+
+Sinonimi di \emph{sistema operativo} sono \textbf{macchina virtuale} (virtual
+machine) e \textbf{gestore dlle risorse} (resource manager).
+
+\section{Virtualizzazione della CPU}
+L'unica nota in questo programma è l'utilizzo della funzione \emph{spin()}, che
+controlla l'orologio di sistema fino a quanto $1$ minuto non è passato, quindi
+riprende l'esecuzione.
+
+\lstinputlisting[caption=Interazione con la  CPU usando la funzione spin()]{listings/cpu.c}
+
+Da notare che se il programma viene eseguito con un comando del tipo:
+\begin{lstlisting}[language=bash,caption=Esecuzione in concorrenza]
+prompt> ./cpu A & ./cpu B &./cpu C & ./cpu D
+[7353]
+[7354]
+[7355]
+[7356]
+A
+B
+D
+C
+A
+B
+D
+C
+A
+...
+\end{lstlisting}
+
+Possiamo osservare che sembra che vengano eseguiti simultaneamente quattro
+programmi diversi, ciò è dovuto alla \emph{virtualizzazione della CPU}.
+
 \section{Memoria virtualizzata}
 \lstinputlisting[caption=Dimostrazione dell'utilizzo di indirizzi virtuali]{listings/mem.c}
+
+La memoria \textbf{RAM} è generalmente virtualizzata, difatti se eseguiamo
+il programma precedente con un comando tipo:
+\begin{lstlisting}[language=bash,caption=Esecuzione in concorrenza]
+prompt > ./mem &; ./mem &
+[1] 24113
+[2] 24114
+(24113) address pointed by p: 0x200000
+(24114) address pointed by p: 0x200000
+(24113) p: 1
+(24114) p: 1
+(24113) p: 2
+(24114) p: 2
+(24113) p: 3
+(24114) p: 3
+(24113) p: 4
+(24114) p: 4
+...
+\end{lstlisting}
+
+Possiamo osservare il funzionamento della virtualizzazione della memoria,
+infatti ogni programma è lanciato in un proprio \textbf{virtual address space};
+semplifica la gestione della memoria per il programma ed è mappato ad una
+sezione della memoria fisica.
 
 \section{Periferiche}
 Nell'interazione di un calcolatore con le periferiche, è il kernel che
