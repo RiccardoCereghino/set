@@ -16,6 +16,11 @@ Per esempio la syscall send, copia dalla ram una certa sezione di memoria nel
 NIC, che verrà inviata in rete.
 
 \subsection{TCP/UDP}
+\begin{figure}[t]
+\includegraphics[width=.8\textwidth]{gfx/chadudp.jpg}
+\centering
+\end{figure}
+
 Il protocollo TCP garantisce l'invio del messaggio, dato che attende una
 risposta da parte del ricevente.
 Il protocollo UDP invia datagrammi, ma non si è certi se la ricezione è
@@ -231,4 +236,77 @@ la di realizzare l'astrazione dello stream di byte; questi numeri per motivi
 di sicurezza non partono da $0$, ma da un valore casuale; lo scopo della
 prima squenza di passaggi è di scambiare queste informazioni.
 
+Inoltre \textbf{SEQ} segnala anche l'inizio dello stream di byte da leggere.
+
 Se il messaggio viene suddiviso in tanti datagrammi cumulativi, viene inviato un unico \textbf{ACK cumulativo}.
+
+Il \textbf{timeout} è il tempo che il processo impiega ad inviare e ricevere i
+messaggi, dipende dalla lunghezza dei messaggi e dalla velocità dei
+calcolatori.
+
+La \textbf{media mobile} dà più peso agli ultimi valori, si rende necessaria
+per calcolare il tempo di timeout.
+\[
+  \text{Estimated }=(1-\alpha)\times\text{ Estimated}+\alpha\text{ SampleRTT}
+\]
+
+Inoltre si usa una stime della variabilità:
+\[
+  \text{Dev}=(1-\beta)\times\text{ Dev}+\beta\times\mid\text{SampleRTT}-
+  \text{Estimated}\mid
+\]
+
+I parametri $\alpha,\beta$ hanno un valore consigliato: $\alpha=\dfrac{1}{8}$,
+$\beta=\dfrac{1}{4}$.
+
+Quindi inizialmente viene assegnato un valore fisso viene inizialmente
+assegnato ad \emph{Estimated} e \emph{Dev}, quindi il primo messaggio viene
+inviato, quindi nel primo scambuio, in cui il client riceve il \emph{SYN-ACK},
+si ottiene il primo \emph{SampleRTT}.
+
+Quindi si possono comparare i valori \emph{Estimated} e \emph{Dev},
+(Deviazione) ogni scambio di \emph{ACK e SIN-ACK}.
+
+Il \textbf{timeout sarà}:
+\[
+  \text{Time-out}=\text{Estimated}+4\times\text{ Dev}
+\]
+
+\subsubsection{Flow control}
+Il motivo principale della perdita di messaggi è la mancanza di
+sincronizzazione, un tempo era molto probabile ricevere messaggi corrotti,
+ora la perdita di messaggi è legata alla mancanza di buffer liberi di
+ricezione.
+
+Il \textbf{mittente} avrà un buffer di ricezione (TX buffer), così come
+il destinatario (RX buffer), nei quali i datagramm vengono ricevuti.
+
+Per garantire che vi siano sempre buffer di ricezione liberi sarà necessario
+comunicare all'interlocutore il numero di buffer allocati.
+
+All'interno dell'header \textbf{TCP} vi sarà un campo \textbf{receive window}
+che contiene la grandezza dei buffer di ricezione del destinatario.
+
+I messaggi saranno inviati o alla ricezione di un \textbf{ACK} o alla scadenza
+del \textbf{TIMEOUT}.
+
+In generale, \emph{UDP} utilizza un approccio ottimistico per cui in una
+comunicazione fluida è più efficiente rispetto a \emph{TCP} che si accerta
+che ogni messaggio venga ricevuto correttamente.
+
+\subsubsection{Congestion control}
+Il \textbf{TCP} implementa anche un controllo di congestione oltre al \emph{
+flow control}, è necessario per ridurre la perdita di messaggi sulla reta,
+ma non da parte del destinatario, ma dai \emph{router} che implementano lo
+\emph{store and forward}.
+
+Quindi è il \emph{router} che rileva la congestione di dati (mancanza di
+buffer) e rallenta la ricezione di dati.
+
+Il congestion control avviene in tre fasi:
+\begin{enumerate}
+  \item \textbf{slow start}: invio di pochi bytes;
+  \item dopo l' \textbf{ACK}, raddoppio la quantità di datagrammi inviati;
+  \item quindi se i dati inviati diventano troppo grandi, si torna ad un
+    passaggio indietro e si aumentano a passi i dati inviati.
+\end{enumerate}
