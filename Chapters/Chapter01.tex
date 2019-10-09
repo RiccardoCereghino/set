@@ -310,3 +310,131 @@ Il congestion control avviene in tre fasi:
   \item quindi se i dati inviati diventano troppo grandi, si torna ad un
     passaggio indietro e si aumentano a passi i dati inviati.
 \end{enumerate}
+
+\section{Application layer}
+L'ultimo livello di \emph{networking} è l'implementazione a livello
+applicativo.
+Per cui si rende necessaria un interfaccia per applicazione, \textbf{API}, si
+userà lo standard \textbf{POSIX}; si utilizzano i \textbf{socket}.
+
+\paragraph{File descriptor:}
+un processo che permette di interagire con il \textit{file system}, permettono
+di stabilire un collegamento tra i buffer a livello aplicativo e quelli di
+sistema.
+
+Il file descriptor (\textbf{fd}) creato, per esempio, alla chiamata di \textit{open},
+sarà un \textbf{int} che rappresenta l'indice del file nell'array dei file
+in utilizzo.
+
+Nel caso di errore, \emph{fd} sarà un numero negativo.
+
+\subsection{System calls sui socket di tipo datagram}
+Ogni \textbf{system call} è bloccante, nel caso di un errore il programma si
+ferma.
+Si possono riprogrammare le \emph{syscall} per renderle non bloccanti, con la
+gestione del messaggio di errore \textbf{E\_WOULDBLOCK}.
+
+\subsubsection{Socket system call}
+Quindi alla \textit{syscall} su \textbf{socket}, verrà creato un nuovo \emph{
+fd}.
+
+\begin{lstlisting}[caption=Esempio di syscall a socket]
+int fd = socket(int domain, int type, int protocol);
+\end{lstlisting}
+
+Dove:
+\begin{itemize}
+  \item \textbf{domain:}
+    \begin{itemize}
+      \item \emph{AF\_UNIX}: locale, nomi di file;
+      \item \emph{AF\_INET}: $IPV4$;
+      \item \emph{AF\_INET6}: $IPV6$;
+    \end{itemize}
+  \item \textbf{type:}
+    \begin{itemize}
+      \item \emph{SOCK\_DGRAM}: $IPv4$;
+      \item \emph{SOCK\_STREAM}: $IPv6$;
+      \item \emph{SOCK\_RAW}: utilizzato per saltare i passaggi di trasporto e
+        di rete fino a \emph{datalink};
+    \end{itemize}
+  \item \textbf{protocol:} esiste uno ed uno solo per type, è possibile
+    lasciare il predefinito ($0$).
+\end{itemize}
+
+\subsubsection{Bind system call}
+La \emph{syscall} \textbf{bind} è necessaria per associare un indirizzo ad un
+\textbf{socket}.
+
+\begin{lstlisting}[caption=Esempio di syscall a bind]
+int fd = bind(int fd, const struct sockaddr*addr, socklen_t addrlen);
+\end{lstlisting}
+
+Dove:
+\begin{itemize}
+  \item \textbf{fd:} il file descriptor del \emph{socket} riferimento;
+  \item \textbf{addr:} alloca lo spazio necessario per salvare il numero
+    di $bit$ corretti;
+  \item \textbf{addrlen:} la lunghezza dell'indirizzo da salvare (o del nome
+    del file).
+\end{itemize}
+
+\subsubsection{Send to system call}
+\begin{lstlisting}[caption=Esempio di syscall sendto]
+ssize_t sendto(int fdA, const void*buf, size_t len, int flags, const struct sockaddr*addr, socklen_t addrlen);
+\end{lstlisting}
+
+Dove:
+\begin{itemize}
+  \item \textbf{fdA:} file descriptor del socket da cui inviare;
+  \item \textbf{buf:} buffer da cui inviare;
+  \item \textbf{len:} lunghezza del messaggio;
+  \item \textbf{flags:} ;
+  \item \textbf{sockaddr:} indirizzo del socket (comprensivo di porta);
+  \item \textbf{socklen:} lunghezza del socket;
+\end{itemize}
+
+\subsubsection{Receive from system call}
+\begin{lstlisting}[caption=Esempio di syscall receivefrom]
+ssize_t recvfrom(int fdB, const void*buf, size_t len, int flags, struct sockaddr*addr, socklen_t addrlen);
+\end{lstlisting}
+
+Dove:
+\begin{itemize}
+  \item \textbf{fdA:} file descriptor del socket in cui ricevere;
+  \item \textbf{buf:} buffer nel quale scrivere il messaggio;
+  \item \textbf{len:} lunghezza del messaggio;
+  \item \textbf{flags:} ;
+  \item \textbf{sockaddr:} indirizzo del socket (comprensivo di porta del
+    sender);
+  \item \textbf{socklen:} lunghezza del socket;
+\end{itemize}
+
+\subsubsection{Connect system call}
+\begin{lstlisting}[caption=Esempio di syscall connect]
+int recvfrom(int fdA, const struct sockaddr*addr, socklen_t len);
+\end{lstlisting}
+
+\subsubsection{Listen system call}
+\begin{lstlisting}[caption=Esempio di syscall listen]
+int recvfrom(int fdB, int backlog);
+\end{lstlisting}
+
+\subsubsection{Accept system call}
+\begin{lstlisting}[caption=Esempio di syscall accept]
+int accept(int fdB, 2 parametri);
+\end{lstlisting}
+Il ritorno della funzione è un \textbf{fd}.
+Per ogni successo il server associa un nuovo socket.
+
+\subsection{Esempio di scambio di datagrammi}
+Il server ed il client creano un socket di tipo \emph{datagram}, il server
+esegue un \emph{bind}.
+Il client invece esegue una \emph{syscall} di tipo \textbf{sendto}, il server
+utilizza \textbf{recvfrom}, etc..
+
+\subsection{Esempio di scambio di stream}
+Il server ed il client creano socket di tipo \emph{stream}, il server esegue
+la \emph{bind}, il client la \emph{connect}, per ogni \emph{send} e
+\emph{receive} non è più necessario lo scambio di indirizzo.
+Il server deve attivare \textbf{listen} prima dell'arrivo della \emph{connect}.
+
