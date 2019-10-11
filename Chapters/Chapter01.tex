@@ -438,3 +438,8 @@ la \emph{bind}, il client la \emph{connect}, per ogni \emph{send} e
 \emph{receive} non è più necessario lo scambio di indirizzo.
 Il server deve attivare \textbf{listen} prima dell'arrivo della \emph{connect}.
 
+\section{Modello banda latenza}
+$n=$numero di byte da inviare
+\[
+  D(n)=L_0+\dfrac{n}{B}
+\]
