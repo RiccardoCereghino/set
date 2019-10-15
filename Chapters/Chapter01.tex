@@ -443,3 +443,83 @@ $n=$numero di byte da inviare
 \[
   D(n)=L_0+\dfrac{n}{B}
 \]
+
+\section{Protocollo a livello applicativo: DNS}
+Lo scopo è di trasformare gli indirizzi numerici in stringhe.
+Lo scopo della funzione \emph{addrinfo()} è di trasformare appunto l'indirizzo.
+
+Il protocollo prevede che ci sia un \emph{client} che invia una richiesta ed
+un \emph{server} che risponda, basato sul protocollo di trasporto \textbf{UDP},
+è possibie utilizzare il protocollo \textbf{TCP} per poter inviare datagrammi
+più estesi.
+
+La porta standard è la $53$.
+
+I datagrammi (serie da $32bit$, con dimensione massima di $512byte$) inviati
+sono composti da:
+
+\begin{tabular}{|c|c|}
+                                               \hline
+  ident (16bit)        & FLAG(16bit)        \\ \hline
+  \#domande             & \#risposte          \\ \hline
+  \#record autoritativi & \#record aggiuntivi \\ \hline
+                       &                    \\ \hline
+                       &                    \\ \hline
+                       &                    \\ \hline
+                       &                    \\ \hline
+                       &                    \\ \hline
+\end{tabular}
+
+Il \emph{\#domande} indica quante righe precedono le \emph{risposte}.
+I record autoratitativi seguono le risposte, a loro volta sono seguiti dai
+dai record aggiuntivi.
+
+\subsection{Tipi di indirizzi}
+\begin{itemize}
+  \item \textbf{Tipo A:} indirizzo standard (es. www.dibris.unige.it);
+  \item \textbf{Tipo MX:} indirizzo del server di posta elettronica;
+  \item \textbf{Tipo NS:} informazione interna del protocollo \emph{DNS},
+    simile a \textbf{MX}, indica il server \textbf{DNS} del dominio;
+  \item \textbf{Tipo CNAME:} la \textbf{C} rappresenta \textbf{Canonical},
+    possono corrispondere più indirizzi alla stessa macchina, \emph{CNAME}
+    serve per identificare la macchina interpellata.
+\end{itemize}
+
+\subsection{Risoluzione dei nomi}
+Per ottenere l'indirizzo di un qualunque server collegato alla rete si
+utilizza una struttura gerarchica.
+
+\begin{enumerate}
+  \item \textbf{Root}: conosce tutti i domini \emph{top level};
+  \item \textbf{Top level:} i domini top level gerarchicamente sono i figli di
+    root, esempio: \emph{it,com,uk etc.};
+  \item \textbf{Autoritativi:} figli di \emph{top level}, esempio: \emph{unige,
+    google, amazon}, un livello \emph{autoritativo} può avere come figlio
+    un altro livello \emph{autoratitativo}, fino a circa $127$ livelli;
+\end{enumerate}
+
+\subsection{Algoritmo ricorsivo}
+Il client invia una richiesta al suo server in locale, il quale va a vedere
+l'indirizzo, quindi contatta il server root perchè non ha abbastanza
+informazioni per risolvere la richiesta.
+
+Quindi il server \emph{root} inoltra la stessa richiesta al \emph{top level}
+domain corretto, il quale a propria volta invia la medesima richiesta al server
+\emph{autoritativo} e così via.
+
+Una volta terminata la ricorsione l'indirizzo del server contenuto nell'ultimo
+dominio autoratitativo viene mandato indietro fino al client seguendo la
+chiamata ricorsiva (risposta autoritativa).
+
+\subsection{Algoritmo iterativo}
+Il client invia la richiesta al suo server in locale, che se non riesce a
+rispondere, il client reindirizza la richiesta al server root, questo rimbalzo
+si ripete fintanto che il dominio corretto non risponde (risposta
+autoritativa).
+
+\subsection{Algoritmo ibrido}
+I server che contengono le informazioni sono contattati in maniera iterativa,
+i local servers invece supportano l'algoritmo ricorsivo.
+
+Il server in locale piò dare una risposta non autoritativa se il nome è
+salvato in cache.
