@@ -86,3 +86,65 @@ Vi sono $4$ diversi livelli di privilegi per interagire con i dispositivi:
 Se l'utende richiede un interazione con una periferica, un comando di
 \emph{TRAP} viene inviato al kernel, il quale restituise un comando di
 \emph{return from TRAP}.
+
+\section{Spazi di indirizzamento}
+Ad ogni processo in esecuzione corrisponde un \emph{address space}, una
+virtualizzazione della memoria che comporta diversi vantaggi, tra cui non
+permettere ai programmi di modificare memoria non nella propria \emph{address
+space} ed in generale un efficienza maggiore.
+
+
+Un processo è composto da:
+\begin{itemize}
+  \item \textbf{codice:} statico, regione fissa;
+  \item \textbf{dati:} regione fissa;
+  \item \textbf{stack:} regione dinamica, può crescere o diminuire;
+  \item \textbf{heap:} regione dinamica.
+\end{itemize}
+
+
+Quindi l'address space è composto, in ordine, da:
+\begin{itemize}
+  \item \textbf{codice del programma:} dove risiedono le istruzioni;
+  \item \textbf{heap:} contiene i dati creati con i \emph{malloc} e le
+    strutture dinamiche, cresce verso il basso;
+  \item \textbf{memoria libera:} che può essere occupata dallo heap e dallo
+    stack;
+  \item \textbf{stack:} dove risiedono le variabili locali, i valori di ritorno
+    delle funzioni, etc. e cresce verso l'alto.
+\end{itemize}
+
+
+All'interno del sistema operativo è contenuta una struttura dati che contiene
+informazioni relative ai processi in memoria, \textbf{PCB} (Process Control
+Bloc).
+
+\subsection{Virtualizzazione}
+Gli obiettivi della virtualizzazione sono: trasparenza, efficienza e protezione
+ovvero un programma non deve accorgersi che sta utilizzando solo una porzione
+della memoria disponibile.
+
+
+Per implementare queste funzioni si utilizza una \textbf{MMU}; al suo interno
+salviamo un registro chiamato base, il quale cambia a seconda del programma
+in esecuzione.
+
+Questa implementazione non è corretta in quanto non abbiamo indicato un limite
+al valore che possiamo assegnare alla base, quindi i processi potrebbero
+accedere a memoria successiva alla loro, per cui sono gestiti anche i limiti
+su quali valori posso assegnare al registro base.
+
+Nel caso di un \textit{segmentation fault} (errore relativo all'accesso di
+memoria non propria) vengono sollevati gli \textbf{interrupt handlers}, e gli
+\textbf{exception handlers}, i quali gestiscono le eccezioni.
+Altri errori simili che sollevano un interrupt sono la divisione per $0$.
+
+Gli interrupt possono anche essere utilizzati per interagire con il sistema
+operativo, il sistema operativo può disabilitare gli interrupt.
+
+\subsection{Frammentazione}
+La frammentazione interna è composta dalla memoria allocata per un programma,
+ma non utilizzata.
+
+La frammentazione esterna invece è la memoria che non viene utilizzata perchè
+non abbastanza grande da ospitare un processo e tra due address spaces.
