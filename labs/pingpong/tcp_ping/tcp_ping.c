@@ -37,14 +37,12 @@ double do_ping(size_t msg_size, int msg_no, char message[msg_size], int tcp_sock
 
     /*** write msg_no at the beginning of the message buffer ***/
 /*** TO BE DONE START ***/
-
-
+    sprintf(message, (const char *) msg_no);
 /*** TO BE DONE END ***/
 
     /*** Store the current time in send_time ***/
 /*** TO BE DONE START ***/
-
-
+    clock_gettime(CLOCK_TYPE, &send_time);
 /*** TO BE DONE END ***/
 
     /*** Send the message through the socket ***/
@@ -95,14 +93,14 @@ int main(int argc, char **argv)
 	memset(&gai_hints, 0, sizeof gai_hints);
 
 /*** TO BE DONE START ***/
-    gai_hints.ai_family = AF_UNSPEC;
+    gai_hints.ai_family = AF_INET;
     gai_hints.ai_socktype = SOCK_STREAM;
 /*** TO BE DONE END ***/
 
     /*** call getaddrinfo() in order to get Pong Server address in binary form ***/
 /*** TO BE DONE START ***/
-    if ((rv = getaddrinfo(argv[0], argv[1], &gai_hints, &serv_addrinfo)) != 0) {
-        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+    if ((gai_rv = getaddrinfo(argv[1], argv[2], &gai_hints, &server_addrinfo)) != 0) {
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(gai_rv));
         return 1;
     }
 /*** TO BE DONE END ***/
@@ -113,8 +111,16 @@ int main(int argc, char **argv)
 
     /*** create a new TCP socket and connect it with the server ***/
 /*** TO BE DONE START ***/
-
-
+    tcp_socket = socket(
+            server_addrinfo->ai_family,
+            server_addrinfo->ai_socktype,
+            server_addrinfo->ai_protocol
+            );
+    connect(
+            tcp_socket,
+            server_addrinfo->ai_addr,
+            server_addrinfo->ai_addrlen
+            );
 /*** TO BE DONE END ***/
 
 	freeaddrinfo(server_addrinfo);
@@ -129,8 +135,7 @@ int main(int argc, char **argv)
 
     /*** Write the request on socket ***/
 /*** TO BE DONE START ***/
-
-
+    int cammello = send(tcp_socket, request, strlen(request), 0 );
 /*** TO BE DONE END ***/
 
 	nr = read(tcp_socket, answer, sizeof(answer));
@@ -140,8 +145,7 @@ int main(int argc, char **argv)
 
     /*** Check if the answer is OK, and fail if it is not ***/
 /*** TO BE DONE START ***/
-
-
+    if(strstr(answer, "OK") == NULL) fail("Server didn't answer OK\n");
 /*** TO BE DONE END ***/
 
     /*** else ***/

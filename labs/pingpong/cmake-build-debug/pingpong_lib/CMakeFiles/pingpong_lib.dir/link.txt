@@ -1,0 +1,2 @@
+/usr/bin/ar qc libpingpong_lib.a  CMakeFiles/pingpong_lib.dir/fail.c.o CMakeFiles/pingpong_lib.dir/readwrite.c.o CMakeFiles/pingpong_lib.dir/statistics.c.o
+/usr/bin/ranlib libpingpong_lib.a

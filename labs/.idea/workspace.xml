@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
-    <generated />
+    <generated>
+      <config projectName="pingpong_full" targetName="udp_ping" />
+      <config projectName="pingpong_full" targetName="pong_server" />
+      <config projectName="pingpong_full" targetName="pingpong_lib" />
+      <config projectName="pingpong_full" targetName="tcp_ping" />
+    </generated>
   </component>
   <component name="CMakeSettings">
     <configurations>
@@ -19,10 +24,23 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectId" id="1SKCIL2Mc05LVC0cRG4lj0L9LRo" />
+  <component name="ProjectStartupLocalConfiguration">
+    <configurations>
+      <configuration id="CMake Application.pong_server" name="pong_server" />
+    </configurations>
+  </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="make " />
+    </option>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -35,6 +53,34 @@
         </RuleState>
       </list>
     </option>
+  </component>
+  <component name="RunManager" selected="CMake Application.pong_server">
+    <configuration name="pingpong_lib" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pingpong_full" TARGET_NAME="pingpong_lib" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="pong_server" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="3310" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pingpong_full" TARGET_NAME="pong_server" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="pingpong_full" RUN_TARGET_NAME="pong_server">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="tcp_ping" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pingpong_full" TARGET_NAME="tcp_ping" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="pingpong_full" RUN_TARGET_NAME="tcp_ping">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="udp_ping" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pingpong_full" TARGET_NAME="udp_ping" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="pingpong_full" RUN_TARGET_NAME="udp_ping">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.pingpong_lib" />
+      <item itemvalue="CMake Application.pong_server" />
+      <item itemvalue="CMake Application.tcp_ping" />
+      <item itemvalue="CMake Application.udp_ping" />
+    </list>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

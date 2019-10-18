@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="pingpong_full"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\pingpong_lib\;CMake Files\pong_server\;CMake Files\tcp_ping\;CMake Files\udp_ping\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/rick/uni/set/labs/pingpong/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/rick/uni/set/labs/pingpong/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/rick/uni/set/labs/pingpong/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pingpong_lib">
+				<Option output="/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/libpingpong_lib.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/Makefile&quot;  VERBOSE=1 pingpong_lib"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pingpong_lib/fast">
+				<Option output="/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/libpingpong_lib.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/Makefile&quot;  VERBOSE=1 pingpong_lib/fast"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pong_server">
+				<Option output="/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/pong_server" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rick/uni/set/labs/pingpong/pong_server/../pingpong_lib"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/Makefile&quot;  VERBOSE=1 pong_server"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pong_server/fast">
+				<Option output="/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/pong_server" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rick/uni/set/labs/pingpong/pong_server/../pingpong_lib"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/Makefile&quot;  VERBOSE=1 pong_server/fast"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="tcp_ping">
+				<Option output="/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/tcp_ping" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rick/uni/set/labs/pingpong/tcp_ping/../pingpong_lib"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/Makefile&quot;  VERBOSE=1 tcp_ping"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="tcp_ping/fast">
+				<Option output="/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/tcp_ping" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rick/uni/set/labs/pingpong/tcp_ping/../pingpong_lib"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/Makefile&quot;  VERBOSE=1 tcp_ping/fast"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="udp_ping">
+				<Option output="/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/udp_ping" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rick/uni/set/labs/pingpong/udp_ping/../pingpong_lib"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/Makefile&quot;  VERBOSE=1 udp_ping"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="udp_ping/fast">
+				<Option output="/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/udp_ping" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rick/uni/set/labs/pingpong/udp_ping/../pingpong_lib"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/Makefile&quot;  VERBOSE=1 udp_ping/fast"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/rick/uni/set/labs/pingpong/pingpong_lib/fail.c">
+			<Option target="pingpong_lib"/>
+		</Unit>
+		<Unit filename="/home/rick/uni/set/labs/pingpong/pingpong_lib/readwrite.c">
+			<Option target="pingpong_lib"/>
+		</Unit>
+		<Unit filename="/home/rick/uni/set/labs/pingpong/pingpong_lib/statistics.c">
+			<Option target="pingpong_lib"/>
+		</Unit>
+		<Unit filename="/home/rick/uni/set/labs/pingpong/pong_server/pong_server.c">
+			<Option target="pong_server"/>
+		</Unit>
+		<Unit filename="/home/rick/uni/set/labs/pingpong/tcp_ping/tcp_ping.c">
+			<Option target="tcp_ping"/>
+		</Unit>
+		<Unit filename="/home/rick/uni/set/labs/pingpong/udp_ping/udp_ping.c">
+			<Option target="udp_ping"/>
+		</Unit>
+		<Unit filename="/home/rick/uni/set/labs/pingpong/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/rick/uni/set/labs/pingpong/pingpong_lib/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\pingpong_lib\"/>
+		</Unit>
+		<Unit filename="/home/rick/uni/set/labs/pingpong/pong_server/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\pong_server\"/>
+		</Unit>
+		<Unit filename="/home/rick/uni/set/labs/pingpong/tcp_ping/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\tcp_ping\"/>
+		</Unit>
+		<Unit filename="/home/rick/uni/set/labs/pingpong/udp_ping/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\udp_ping\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

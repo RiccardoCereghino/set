@@ -93,6 +93,12 @@ virtualizzazione della memoria che comporta diversi vantaggi, tra cui non
 permettere ai programmi di modificare memoria non nella propria \emph{address
 space} ed in generale un efficienza maggiore.
 
+Lo spazio di indirizzamento non può essere più grande della memoria fisica ed
+occupa una sezione di memoria contigua.
+
+Utilizzando questo metodo abbiamo due problemi di frammentazionem interna ed
+esterna.
+
 
 Un processo è composto da:
 \begin{itemize}
@@ -148,3 +154,33 @@ ma non utilizzata.
 
 La frammentazione esterna invece è la memoria che non viene utilizzata perchè
 non abbastanza grande da ospitare un processo e tra due address spaces.
+
+\subsubsection{Segmentazione}
+La segmentazione è utilizzata per poter utilizzare la memoria frammentata
+esternamente, per cui offre la possibilità di creare uno spazio di
+indirizzamento in memoria non contigua.
+
+
+Nell' $8086$ in $16bit$ la segmentazione era classificata in:
+\begin{itemize}
+  \item \textbf{CS:} code segment;
+  \item \textbf{DS:} data segment;
+  \item \textbf{SS:} stack segment;
+  \item \textbf{ES:} extra segment.
+\end{itemize}
+
+Nel $386$, introduce le tabelle dei descrittori, che descrivono i segmenti che
+che includon, quindi contengono dati per: base, limite, bit di protezione e
+privilegi (DPL).
+
+\begin{itemize}
+  \item \textbf{CS:} code segment, con una local descriptor table;
+  \item \textbf{DS:} data segment, con una global descriptor table;
+  \item \textbf{SS:} stack segment;
+  \item \textbf{ES:} extra segment.
+\end{itemize}
+\[
+  MAX(CPL \quad RPL) \leq DPL \quad BASE + OFFSET
+\]
+
+I segmenti di codice (\textbf{CS}) possono essere utilizzati da piùù processi uguali.
