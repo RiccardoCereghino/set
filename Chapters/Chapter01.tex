@@ -523,3 +523,48 @@ i local servers invece supportano l'algoritmo ricorsivo.
 
 Il server in locale piò dare una risposta non autoritativa se il nome è
 salvato in cache.
+
+\section{Protocollo NTP}
+Il protocollo \textbf{NTP} (Network Time Protocol) si basa sulla gestione del
+tempo, necessario per la sincronizzazione di orologi nella rete.
+
+La versione attuale è la $4$ ed è definita nel protocollo $RFC5905$.
+
+
+Il problema che affronta questo protocollo è relativo agli orologi locali dei
+calcolatori che si connettono tra di loro.
+
+
+Il protocollo \textbf{NTP} utilizza $4$ timestamp:
+\begin{itemize}
+  \item $t_1$: il tempo del momento in cui viene inviato il messaggio
+    (client);
+  \item $t_2$: il tempo del momento in cui viene ricevuto il messaggio
+    (host);
+  \item $t_3$: il tempo del momento in cui viene inviato il messaggio
+    (host);
+  \item $t_4$: il tempo del momento in cui viene ricevuto il messaggio
+    (client).
+\end{itemize}
+
+Quindi a differenza dei protocolli \textbf{UTP} e \textbf{TCP} individuo $2$
+timestamp in più.
+
+Il \emph{Round Trip Time} sarà dato da:
+\[
+  \text{RTT}=(t_4-t_1)-(t_3-t_2)
+\]
+
+
+La \textbf{epoca} è lo standard cui si fa riferimento secondo cui dal punto
+di vista dei calcolatori comincia il tempo (1 gennaio 1970).
+
+Considerando la precisione teorica degli orologi a disposizione dei calcolatori
+, i server \textbf{NTP} hanno una struttura gerarchica:
+\begin{itemize}
+  \item \textbf{livello 0:} orologio atomico;
+  \item \textbf{livello 1:} macchina collegata direttamente allo strato $0$;
+  \item \textbf{livello 2:} macchine collegato allo strato $1$, i livelli
+    successivi sono ricorsivi.
+\end{itemize}
+Ognuna di queste macchine è sia client, che server.

@@ -37,7 +37,7 @@ double do_ping(size_t msg_size, int msg_no, char message[msg_size], int tcp_sock
 
     /*** write msg_no at the beginning of the message buffer ***/
 /*** TO BE DONE START ***/
-    sprintf(message, (const char *) msg_no);
+    sprintf(message,"%d", msg_no);
 /*** TO BE DONE END ***/
 
     /*** Store the current time in send_time ***/
@@ -47,9 +47,8 @@ double do_ping(size_t msg_size, int msg_no, char message[msg_size], int tcp_sock
 
     /*** Send the message through the socket ***/
 /*** TO BE DONE START ***/
-	
-
-/*** TO BE DONE END ***/
+    sent_bytes = send(tcp_socket, message, msg_size, 0 );
+    /*** TO BE DONE END ***/
 
     /*** Receive answer through the socket (blocking) ***/
 	for (offset = 0; (offset + (recv_bytes = recv(tcp_socket, rec_buffer + offset, sent_bytes - offset, MSG_WAITALL))) < msg_size; offset += recv_bytes) {
@@ -60,8 +59,7 @@ double do_ping(size_t msg_size, int msg_no, char message[msg_size], int tcp_sock
 
     /*** Store the current time in recv_time ***/
 /*** TO BE DONE START ***/
-
-
+    clock_gettime(CLOCK_TYPE, &recv_time);
 /*** TO BE DONE END ***/
 
 	printf("tcp_ping received %zd bytes back\n", recv_bytes);
