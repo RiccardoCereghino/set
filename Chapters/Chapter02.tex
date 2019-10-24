@@ -87,7 +87,8 @@ Se l'utende richiede un interazione con una periferica, un comando di
 \emph{TRAP} viene inviato al kernel, il quale restituise un comando di
 \emph{return from TRAP}.
 
-\section{Spazi di indirizzamento}
+\section{Memoria}
+\subsection{Spazi di indirizzamento}
 Ad ogni processo in esecuzione corrisponde un \emph{address space}, una
 virtualizzazione della memoria che comporta diversi vantaggi, tra cui non
 permettere ai programmi di modificare memoria non nella propria \emph{address
@@ -183,4 +184,75 @@ privilegi (DPL).
   MAX(CPL \quad RPL) \leq DPL \quad BASE + OFFSET
 \]
 
-I segmenti di codice (\textbf{CS}) possono essere utilizzati da piùù processi uguali.
+I segmenti di codice (\textbf{CS}) possono essere utilizzati da più processi
+uguali.
+
+Quindi le funzioni \textit{Jmp, Call e Ret} per accedere ad un segmento
+utilizzao due dati: \textbf{offset} e \textbf{selettore offset}.
+
+Definiamo \textbf{EIP} (Instruction Pointer) e \textbf{ESP} (Stack Pointer),
+rispettivamente appartengono ad un determinato \textbf{CS} (Code Segment) e
+\textbf{SS} (Stack Segment).
+
+\textbf{EIP} e \textbf{CS} alla chiamata di \textit{Jmp, Call o Ret}, verranno
+salvati nello stack (\textbf{ESP}).
+
+
+Per ottenere l'indirizzo di memoria giusto viene utilizzata una parola che
+indica appunto sia il \emph{segmento} di riferimento che l'offset (indirizzo
+virtuale).
+
+
+Il \textbf{Call Gate} è uno strato che si aggiunge all'indirizzo virtuale per
+non permettere l'erroneo accesso a sezioni di memoria non utilizzabili dall'
+utente o dal programma.
+
+
+Ogni livello di privilegio ha uno \textbf{stack separato}, per offrire una
+maggiore stabilità del sistema, quindi se una \emph{Call} cambia il livello
+di privilegio dovrà anche cambiare lo \emph{stack}: se il livello di privilegio
+si riduce, tutti i registri che contengono riferimenti a sezioni di memoria
+privilegiata vengono azzerati.
+
+
+\paragraph{Interrupt}
+Se l'utente è kernel, al momento dell'arrivo di un interrupt non c'è bisogno
+di cambiare lo stack, altrimenti sì.
+
+All'arrivo di un interrupt \textbf{eflag} (flag dell'interrupt) viene salvato,
+quindi l'interrupt viene disattivato, \textbf{iret} esce dall'interrupt
+handler.
+
+
+To be continued...
+
+\subsection{Paginazione}
+Per il processo la paginazione è trasparente.
+La memoria fisica è divisa equamente in \textbf{page frame}, la
+virtualizzazione corrispondente sono le \textbf{pagine}, ovvero le pagine sono
+ordinate, mentre la rappresentazione nel \textbf{page frame} non è
+necessariamente ordinata, ma i \textbf{page frame} sono numerati.
+Le pagine sono grandi $4096byte$, in generale sempre potenze di $2$.
+
+
+Quindi si utilizza una tabella di appoggio, lunga tanto quanto il numero di
+pagine, per associare \emph{page frames} a \emph{pagine}, in questa tabella la
+colonna \textbf{present}(flag), vero se la pagina è utilizzata nella memoria
+fisica.
+Una tabella simile è creata ed associata per ogni processo, la tabella è
+creabile e modificabile solo dal kernel.
+
+
+Dato un indirizzo virtuale si divide per la grandezza della pagina per ottenere
+il numero della pagina, quindi dalla tabella di appoggio si seleziona il \emph{
+page frame} corrispondente, quindi si utilizza il resto della divisione per
+determinare l'indirizzo di \textbf{memoria fisica} corrispondente.
+\[
+  \text{Indirizzo fisico} = \text{Indirizzo virtuale}/3 * \text{Grandezza delle
+  pagine} + \text{Indirizzo virtuale} \% 3 
+\]
+
+Stabilita la grandezza della pagina si interpretano i primi $bit$ dell' 
+indirizzo virtuale per trovare il numero di pagina, mentre il restante si usa
+come \emph{offset}, dato l'indirizzo della base si appende l'offset per
+ottenere l'indirizzo fisico.

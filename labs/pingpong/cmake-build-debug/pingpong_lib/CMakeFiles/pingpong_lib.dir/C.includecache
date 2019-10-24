@@ -6,14 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/home/rick/uni/set/labs/pingpong/pingpong_lib/fail.c
-stdlib.h
--
-stdio.h
--
-pingpong.h
-/home/rick/uni/set/labs/pingpong/pingpong_lib/pingpong.h
-
 /home/rick/uni/set/labs/pingpong/pingpong_lib/pingpong.h
 stdio.h
 -
@@ -53,12 +45,6 @@ netinet/udp.h
 -
 assert.h
 -
-
-/home/rick/uni/set/labs/pingpong/pingpong_lib/readwrite.c
-stdlib.h
--
-pingpong.h
-/home/rick/uni/set/labs/pingpong/pingpong_lib/pingpong.h
 
 /home/rick/uni/set/labs/pingpong/pingpong_lib/statistics.c
 stdlib.h

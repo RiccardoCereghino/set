@@ -30,8 +30,8 @@ double timespec_delta2milliseconds(struct timespec *last,
  ***/
 
 /*** TO BE DONE START ***/
-
-
+    double a = last->tv_nsec;
+    printf()
 /*** TO BE DONE END ***/
 
 }
@@ -91,8 +91,9 @@ void print_statistics(FILE * outf, const char *name, int repeats,
 	fprintf(outf, "RTT histogram:\n");
 
 /*** TO BE DONE START ***/
+    for (i = 0; i < N_HISTOGRAM_ITEMS; ++i) fprintf(outf ,"%lg %d\n", h_min + i * h_incr, histogram[i]);
 
-
+    fprintf(outf, "   median Throughput : %lg KB/s", 2.0 * (double)(msg_sz) / rtt[median]);
 /*** TO BE DONE END ***/
 
 	if (mean > 0.0)
