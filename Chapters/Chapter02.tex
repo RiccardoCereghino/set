@@ -1,9 +1,9 @@
 \chapter{Introduzione ai sistemi operativi}
 \begin{figure}[ht]
-    \centering
-    \incfig{struttura}
-    \caption{Struttura base di un calcolatore}
-    \label{fig:struttura}
+  \centering
+  \incfig{struttura}
+  \caption{Struttura base di un calcolatore}
+  \label{fig:struttura}
 \end{figure}
 
 Lo scopo di questa sezione è di virtualizzare le componenti fisiche di un
@@ -156,6 +156,9 @@ ma non utilizzata.
 La frammentazione esterna invece è la memoria che non viene utilizzata perchè
 non abbastanza grande da ospitare un processo e tra due address spaces.
 
+Esistono diversi metodi per poter utilizzare le porzioni di memoria
+frammentata.
+
 \subsubsection{Segmentazione}
 La segmentazione è utilizzata per poter utilizzare la memoria frammentata
 esternamente, per cui offre la possibilità di creare uno spazio di
@@ -214,7 +217,6 @@ di privilegio dovrà anche cambiare lo \emph{stack}: se il livello di privilegio
 si riduce, tutti i registri che contengono riferimenti a sezioni di memoria
 privilegiata vengono azzerati.
 
-
 \paragraph{Interrupt}
 Se l'utente è kernel, al momento dell'arrivo di un interrupt non c'è bisogno
 di cambiare lo stack, altrimenti sì.
@@ -223,8 +225,6 @@ All'arrivo di un interrupt \textbf{eflag} (flag dell'interrupt) viene salvato,
 quindi l'interrupt viene disattivato, \textbf{iret} esce dall'interrupt
 handler.
 
-
-To be continued...
 
 \subsection{Paginazione}
 Per il processo la paginazione è trasparente.
@@ -256,3 +256,50 @@ Stabilita la grandezza della pagina si interpretano i primi $bit$ dell'
 indirizzo virtuale per trovare il numero di pagina, mentre il restante si usa
 come \emph{offset}, dato l'indirizzo della base si appende l'offset per
 ottenere l'indirizzo fisico.
+
+
+La paginazione usa appunto le \textbf{paging tables}, per ogni riga abbiamo
+il \textbf{PPN} (Physical Page Number), un flag (se è utilizzato) e se può
+scrivere.
+Per migliorare l'efficienza si utilizza una cache, la \textbf{TLB} (Translation
+Lookaside Buffer), da un \textbf{VPN} (Virtual Page Number), si ottiene il
+\textbf{PPN} (Physical Page Number) ed il \textbf{PFN} (Physical Frame Number).
+
+
+\subsubsection{Base limite, Segmentazione e paginazione}
+Compariamo i sistemi di suddivisione della memoria: \textbf{B+L}, \textbf{
+segmentazione} e \textbf{paginazione}.
+
+B+L:
+\begin{itemize}
+  \item $?$ spazio di indirizzamento contiguo in \emph{RAM};
+  \item $-$ frammentazione interna;
+  \item $-$ frammentazione esterna;
+  \item $-$ condivisione codice;
+  \item $+$ isolamento\\protezione;
+  \item $-$ efficiente;
+  \item $-$ spazio di indirizzamento contiguo.
+\end{itemize}
+
+Segmentazione:
+\begin{itemize}
+  \item $?$ spazio di indirizzamento contiguo nel segmento, ma non nel processo
+    ;
+  \item $-$ frammentazione interna;
+  \item $-$ frammentazione esterna;
+  \item $\mp$ condivisione codice;
+  \item $+$ isolamento\\protezione;
+  \item $\pm$ efficiente;
+  \item $-$ spazio di indirizzamento contiguo.
+\end{itemize}
+
+Paginazione:
+\begin{itemize}
+  \item $-$ spazio di indirizzamento non contiguo;
+  \item $\pm$ frammentazione interna ($4k$);
+  \item $-$ frammentazione esterna;
+  \item $\mp$ condivisione codice;
+  \item $+$ isolamento\\protezione;
+  \item $\pm$ efficiente;
+  \item $-$ spazio di indirizzamento contiguo.
+\end{itemize}
