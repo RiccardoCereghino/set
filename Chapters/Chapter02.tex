@@ -156,15 +156,21 @@ ma non utilizzata.
 La frammentazione esterna invece è la memoria che non viene utilizzata perchè
 non abbastanza grande da ospitare un processo e tra due address spaces.
 
+Il \textit{compattamento} della memoria non è una soluzione attuabile in quanto
+sarebbe estrememante inefficiente.
+
 Esistono diversi metodi per poter utilizzare le porzioni di memoria
 frammentata.
 
 \subsubsection{Segmentazione}
 La segmentazione è utilizzata per poter utilizzare la memoria frammentata
-esternamente, per cui offre la possibilità di creare uno spazio di
-indirizzamento in memoria non contigua.
+esternamente.
+Si utilizza la \textit{rilocazione dinamica}, ovvero la traduzione di indirizzi
+logici in indirizzi fisici attraverso una funzione di rilocazione implementata
+nell'hardware, \textbf{MMU}.
 
 
+\paragraph{Registri base limite}
 Nell' $8086$ in $16bit$ la segmentazione era classificata in:
 \begin{itemize}
   \item \textbf{CS:} code segment;
@@ -173,9 +179,37 @@ Nell' $8086$ in $16bit$ la segmentazione era classificata in:
   \item \textbf{ES:} extra segment.
 \end{itemize}
 
-Nel $386$, introduce le tabelle dei descrittori, che descrivono i segmenti che
-che includon, quindi contengono dati per: base, limite, bit di protezione e
-privilegi (DPL).
+In questa versione, la \textbf{MMU} mantiene una lista di registri \textit{
+base/limite}, ad ogni coppia corrisponde un segmento di memoria frammentata,
+la base contiene il primo indirizzo di memoria utile, mentre il limite quanta
+memoria contigua è disponibile.
+
+Nel momento in cui il processore genere un indirizzo virtuale prende in
+considerazione questi registri; l'indirizzo viene generato in fase di \textit{
+fetch} dell'istruzione.
+Se l'indirizzo generato supera il valore contenuto nel registro limite, un
+eccezione viene generata in quanto l'indirizzo richiesto non apparterrebbe al
+segmento.
+
+\paragraph{Tabelle dei descrittori}
+L'architettura $386$, risolve due problemi relativi alla precedente soluzione:
+una più veloce risoluzione dei permessi ed il limite di registri salvabili
+in MMU.
+
+
+Per ottenere l'indirizzo di memoria giusto viene ora utilizzata una parola che
+indica sia il \emph{segmento} di riferimento che l'offset all'interno del
+segmento (indirizzo virtuale).
+
+
+Inoltre viene introdotta una struttura dai tabellare, mantenuta all'interno
+della memoria riservata del sistema operativo, detta \textit{tabella dei
+descrittori}, contenente i dati relativi alla coppia dei registri \textit{base/
+limite} di ogni segmento, il bit di protezione e la gestione dei privilegi
+DPL).
+La MMU conterrà soltanto due registri, \textbf{STLR} (Segment Table Limit
+Register) la dimensione della tabella dei segmenti e \textbf{STBR} (Segment
+Table Base Register) l'indirizzo base della tabella dei segmenti.
 
 \begin{itemize}
   \item \textbf{CS:} code segment, con una local descriptor table;
@@ -191,7 +225,7 @@ I segmenti di codice (\textbf{CS}) possono essere utilizzati da più processi
 uguali.
 
 Quindi le funzioni \textit{Jmp, Call e Ret} per accedere ad un segmento
-utilizzao due dati: \textbf{offset} e \textbf{selettore offset}.
+utilizzano due dati: \textbf{offset} e \textbf{selettore offset}.
 
 Definiamo \textbf{EIP} (Instruction Pointer) e \textbf{ESP} (Stack Pointer),
 rispettivamente appartengono ad un determinato \textbf{CS} (Code Segment) e
@@ -200,10 +234,6 @@ rispettivamente appartengono ad un determinato \textbf{CS} (Code Segment) e
 \textbf{EIP} e \textbf{CS} alla chiamata di \textit{Jmp, Call o Ret}, verranno
 salvati nello stack (\textbf{ESP}).
 
-
-Per ottenere l'indirizzo di memoria giusto viene utilizzata una parola che
-indica appunto sia il \emph{segmento} di riferimento che l'offset (indirizzo
-virtuale).
 
 
 Il \textbf{Call Gate} è uno strato che si aggiunge all'indirizzo virtuale per
