@@ -568,3 +568,85 @@ Considerando la precisione teorica degli orologi a disposizione dei calcolatori
     successivi sono ricorsivi.
 \end{itemize}
 Ognuna di queste macchine è sia client, che server.
+
+\chapter{Posta elettronica}
+Una delle caratteristiche principali della posta elettronica è l' \textit{
+asincronicità}.
+
+\section{SMTP}
+Le email utilizzano diverse protocolli tra cui \textbf{SMTP}, definito per la
+prima volta nell' \textbf{RFC 821} (che risale al 1980) ed espanso nell'
+\textbf{RFC 5321}.
+
+Utilizza una codifica \textbf{ASCII a 7bit}, la porta predefinita è la $25$ ed
+utilizza il protocollo \textbf{TCP}.
+
+\subsection{Protocollo Best Effort}
+L'applicazione del protocollo \textit{Best Effort} nell'ambito del protocollo
+\emph{SMTP} implica un salvataggio da parte del mittente dei dati da inviare
+fintanto che non si è certi che il messaggio sia arrivato, oppure alla
+scadenza di un timeout.
+
+\subsection{Funzionamento}
+Il mittente (client) invia il messaggio ad un server, quindi il client alla
+fine dell'invio può chiudere la connessione.
+A questo punto il server che ha ricevuto il messaggio lo invia ad un altro
+server, se necessario, con l'obiettivo di spostare il messaggio al server
+del ricevente, in questo punto termina il compito del protocollo \textbf{SMTP},
+successivamente il ricevente riceve il messaggio nel momento
+in cui apre una connessione con il server.
+
+\subsubsection{Three way connection}
+Usa la \emph{three way connection}, una volta stabilita la connessione (dopo il
+segnale di ACK)
+
+\begin{enumerate}
+  \item \textbf{SERVER:} invia la stringa \emph{220 server@example.com};
+  \item \textbf{CLIENT:} invia la stringa \emph{HELO server@example.it}, oppure
+    la stringa \emph{EHLO server@example.it} per connessioni sicure;
+  \item \textbf{SERVER:} invia la stringa \emph{250 client@example.it};
+  \item \textbf{CLIENT:} invia la stringa \emph{MAIL FROM: client@example.it};
+  \item \textbf{SERVER:} invia la stringa \emph{250 client@example.it server
+    ok};
+  \item \textbf{CLIENT:} invia la stringa \emph{RECPT TO: recipient@example.it}
+    ;
+  \item \textbf{SERVER:} invia la stringa \emph{250 recipient@example.it 
+    recipient OK};
+  \item \textbf{CLIENT:} invia la stringa contenente \emph{DATA};
+  \item \textbf{SERVER:} risponde con $354$;
+  \item \textbf{CLIENT:} invia il testo del \textbf{messaggio} che si conclude
+    con un newline ed un punto;
+  \item \textbf{SERVER:} risponde con \emph{250} segnalando la fine della
+    comunicazione;
+  \item \textbf{CLIENT:} invia la stringa \emph{quit}.
+\end{enumerate}
+
+\subsubsection{Formato del messaggio}
+Il messaggio è composto da $72$ caratteri per riga, le sequenze di caratteri
+\emph{<CR><LF>} costituiscono un a capo; lo \emph{header} termina con due
+a capi di seguito.
+
+Lo \emph{header} è composto di chiavi, alcune sono ridondanti rispetto ai dati
+scambiati secondo il protocollo \textbf{SMTP}, difatti i dati esposti nel
+corpo del messaggio sono puramente a scopo informativo.
+\begin{itemize}
+  \item subject;
+  \item from;
+  \item to;
+  \item cc;
+  \item bcc;
+  \item date
+\end{itemize}
+
+
+I messaggi possono essere codificati in base $64$ Radix, come caratteri
+comprende le cifre, le lettere maiuscole e minuscole, $\_$ ed $=$.
+
+Quindi ad ogni $6bit$ del messaggio corrisponde $1$ carattere Radix.
+
+La prima versione del protocollo \textbf{SMTP} utilizzava la codifica \emph{
+uuencode}.
+
+
+Un evoluzione del Radix 64 utilizza i MIME, per esempio un \emph{MIME/TYPE}
+\emph{text/ascii} indica che devo codificare un file di testo formato ascii.
