@@ -288,13 +288,49 @@ come \emph{offset}, dato l'indirizzo della base si appende l'offset per
 ottenere l'indirizzo fisico.
 
 
-La paginazione usa appunto le \textbf{paging tables}, per ogni riga abbiamo
-il \textbf{PPN} (Physical Page Number), un flag (se è utilizzato) e se può
-scrivere.
-Per migliorare l'efficienza si utilizza una cache, la \textbf{TLB} (Translation
-Lookaside Buffer), da un \textbf{VPN} (Virtual Page Number), si ottiene il
-\textbf{PPN} (Physical Page Number) ed il \textbf{PFN} (Physical Frame Number).
+La paginazione usa appunto le \textbf{paging tables}, per ogni riga abbiamo:
+\begin{itemize}
+  \item il \textbf{PPN} (Physical Page Number);
+  \item un bit di validità;
+  \item un bit di presenza (se la pagina è presente);
+  \item un bit di accesso (se ha già acceduto);
+  \item un bit di modifica;
+  \item dei bit per il livello di privilegio (r,w,x).
+\end{itemize}
 
+
+Per migliorare l'efficienza si utilizza una cache, la \textbf{TLB}
+(Translation Lookaside Buffer), da un \textbf{VPN} (Virtual Page Number),
+si ottiene il \textbf{PPN} (Physical Page Number) ed il \textbf{PFN}
+(Physical Frame Number).
+
+
+Per migliorare ulteriormente la paginazione, non si utilizzano i bit di
+accesso e modifica, sarà quindi il kernel a tenere traccia di questi valori,
+lo stesso ragionamento si può fare per i bit sui permessi.
+
+\paragraph{Osservazione}
+Per indiciare una ram di $4GB$ sono necessari $32bit$, un indirizzo virtuale
+è composto da $20bit$ per selezionare la pagina e:
+\begin{itemize}
+  \item $v=1bit$;
+  \item $p=1bit$;
+  \item $r/w/x=3bit$;
+  \item $d=1bit$.
+\end{itemize}
+
+Quindi abbiamo un totale di $27bit$ ($32bit$ normalizzati), per una RAM da
+$4GB$ la \emph{paging table} occuperebbe $400mb$ di memoria contigua nella
+RAM.
+
+Per rendere più efficiente la tabella, i $20bit$ di indirizzamento di dividono
+logicamente in 2 blocchi da $10bit$, il primo per indirizzare il blocco di
+memoria, il secondo per ottenere l'effettivo indirizzo fisico.
+
+Il primo blocco in realtà indirizza su di una nuova tabella di appoggio il cui
+contenuto sarà se la pagina è occupata o no e l'indirizzo della tabella
+corrispondente, quindi si usa la tabella di appoggio ed il secondo blocco di
+$10bit$ per ottenere l'indirizzo fisico.
 
 \subsubsection{Base limite, Segmentazione e paginazione}
 Compariamo i sistemi di suddivisione della memoria: \textbf{B+L}, \textbf{
@@ -333,3 +369,5 @@ Paginazione:
   \item $\pm$ efficiente;
   \item $-$ spazio di indirizzamento contiguo.
 \end{itemize}
+
+
