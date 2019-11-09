@@ -7,3 +7,17 @@ set.synctex.gz
 set.synctex(busy)
 
 set.log
+
+*.fls
+
+*.lof
+
+*.lot
+
+*.toc
+
+*.fdb_latexmk
+
+*.blg
+
+*.out

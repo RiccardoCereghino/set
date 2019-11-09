@@ -2,8 +2,7 @@
 \begin{figure}[ht]
   \centering
   \incfig{struttura}
-  \caption{Struttura base di un calcolatore}
-  \label{fig:struttura}
+  \caption{Struttura base di un calcolatore}\label{fig:struttura}
 \end{figure}
 
 Lo scopo di questa sezione è di virtualizzare le componenti fisiche di un
@@ -13,7 +12,7 @@ Sinonimi di \emph{sistema operativo} sono \textbf{macchina virtuale} (virtual
 machine) e \textbf{gestore dlle risorse} (resource manager).
 
 \section{Virtualizzazione della CPU}
-L'unica nota in questo programma è l'utilizzo della funzione \emph{spin()}, che
+L'unica nota in questo programma è l'utilizzo della funzione \emph{spin ()}, che
 controlla l'orologio di sistema fino a quanto $1$ minuto non è passato, quindi
 riprende l'esecuzione.
 
@@ -370,4 +369,15 @@ Paginazione:
   \item $-$ spazio di indirizzamento contiguo.
 \end{itemize}
 
+\section{System calls}
+\subsection{fork}
+La funzione \emph{fork} crea un processo quasi identico al processo padre e
+restituisce un numero positivo chiamato \emph{pid\_t}.
+Ogni processo ha un \emph{ppid} ( \emph{pid} del padre).
 
+\subsection{exit}
+La funzione \emph{exit} ritorna $0$ se il processo si chiude correttamente,
+altrimenti un numero.
+
+\subsection{wait}
+Ritorna un \emph{pid\_t} quando il processo passato come argomento termina. 
