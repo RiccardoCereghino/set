@@ -658,3 +658,50 @@ Un evoluzione del Radix 64 utilizza i MIME, per esempio un \emph{MIME/TYPE}
 \textbf{TCP/IP}
 
 \textbf{IMAP}
+
+\section{FTP}
+Definito ne \textbf{RFC 114} nel 1971, prima del \textbf{TCP/UDP},
+successivamente ne \textbf{RFC 765} e \textbf{RFC 959}, la versione
+attualmente in uso.
+
+Viene usata la porta \textbf{TCP/21} su cui viene aperto il \emph{canale di
+controllo}, attraverso cui il cliente può mandare una serie di comandi al
+server.
+
+La porta \textbf{TCP/20} viene usata per la connessione dati, ovvero per
+scambiare i file.
+
+Solitamente viene eseguita una forma di autenticazione.
+
+Esistono una seria di comandi:
+\begin{itemize}
+  \item LIST;
+  \item CD;
+  \item PORT;
+  \item LCD;
+  \item RETR;
+  \item STOR;
+  \item DELE.
+\end{itemize}
+
+Nell' \textbf{RFC 1579} viene definito un nuovo parametro, il \textbf{PASV}
+che abilita la modalità passiva.
+
+\subsection{Funzionamento}
+Prima viene aperta la connessione attraverso il canale di controllo, quindi
+vengono inviati i dati di autenticazione formattati come:\newline
+USER username\newline
+PASS password\newline
+
+Nel caso di successo il server riponde con $200OK$.
+
+
+Per scaricare un file è necessario avere informazioni sullo stesso, quindi
+il client crea un socket, ne invia le informazioni al server, quindi il
+server invia il file.
+Alla fina del trasferimento dati viene chiusa la connessione.
+
+\subsection{FTP anonimo}
+Se come utente passiamo \textbf{USER anonymous}, allora parliamo di FTP
+anonimo, il sistema non richiede password nonostante venga data la
+possibilità per identificare l'utente, attraverso l'email per esempio.
