@@ -381,3 +381,67 @@ altrimenti un numero.
 
 \subsection{wait}
 Ritorna un \emph{pid\_t} quando il processo passato come argomento termina. 
+
+\subsection{exec}
+Sostituisce il processo corrente con uno nuovo, l'argomento è un PATH.
+
+\subsection{open}
+Apre un file e gli assegna il primo file descriptor disponibile.
+
+\subsection{dup}
+Duplica un fd creandone uno nuovo che punta allo stesso oggetto.
+
+\subsection{dup2}
+La dup2 ha due parametri, il primo il vecchio file descriptor ed il secondo il
+nuovo, duplica il primo parametro nel secondo, fa una close del secondo
+parametro nel caso fosse già aperto.
+
+\subsection{pipe}
+\begin{lstlisting}[
+  language=bash,
+  escapeinside={(£}{£)},
+  caption={
+    Esempio di pipe (|)
+  }
+]
+# (1)
+ls -l | grep cammello
+
+# (2)
+ls -l > camelus
+grep cammello < camelus
+\end{lstlisting}
+
+L'operatore $|$ permette di chiamare la syscall \textit{pipe()} la quale
+permette di eseguire l'operazione esclusivamente in memoria, difatti nel
+secondo esempio \textit{camelus} sarebbe scritto su disco e, su risultati
+molto grandi sarebbe molto più lento ed inefficiente.
+
+Quindi \textit{pipe(fds)} prende come argomento un array di file descriptors
+ed utilizza un buffer riservato al kernel per svolgere la lettura.
+
+Il funzionamento per il  comando $(1)$ sarà:
+\begin{itemize}
+  \item il processo padre chiama la \textit{pipe()}, $2$ \textit{fork()},
+    \textit{close(3)}, \textit{close(4)} e $2$ \textit{wait()};
+  \item la prima figlia \textit{ls -l} chiama:
+    \begin{itemize}
+      \item \textit{close(1)};
+      \item \textit{dup(3)};
+      \item \textit{close(2)};
+      \item \textit{close(4)} dove $4$ è il fd della pipe;
+      \item \textit{exec(...)};
+    \end{itemize}
+  \item la seconda figlia \textit{grep cammello} chiama:
+    \begin{itemize}
+      \item \textit{close(0)};
+      \item \textit{dup(4)}, dove $3$ è il file descriptor della fork;
+      \item \textit{close(2)};
+      \item \textit{close(4)} dove $4$ è il fd della pipe;
+      \item \textit{exec(...)};
+    \end{itemize}
+\end{itemize}
+
+\section{Shell}
+La shell è il programma che attende la scrittura e l'invio dei comandi, una
+delle funzionalità è di espandere le variabili passate (es. *.c).

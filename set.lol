@@ -26,4 +26,6 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {lstlisting}{\numberline {3.4}Esecuzione in concorrenza}{25}{lstlisting.3.4}% 
 \defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {3.5} Esempio di pipe (|) }{32}{lstlisting.3.5}% 
+\defcounter {refsection}{0}\relax 
 \contentsline {lstlisting}{\numberline {a.1}Esempio di MAKEFILE}{35}{lstlisting.Alph1.1}% 
