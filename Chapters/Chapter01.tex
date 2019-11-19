@@ -705,3 +705,63 @@ Alla fina del trasferimento dati viene chiusa la connessione.
 Se come utente passiamo \textbf{USER anonymous}, allora parliamo di FTP
 anonimo, il sistema non richiede password nonostante venga data la
 possibilità per identificare l'utente, attraverso l'email per esempio.
+
+\chapter{HTTP}
+Definito per la prima volta nel $1977$, nell' \textbf{RFC 2068}, poi nel $1999$
+nell' \textbf{RFC 2616} e nel $2015$ nell' \textbf{RFC 7230}.
+
+Un aspetto fondamentale del protocollo HTTP sono gli \textbf{URL} (Uniform
+Resource Identifier) la cui sintassi è:
+
+\emph{http\_URL = "http:" "//" host [ ":" port ] [ abs\_path ]}
+
+\section{Richiesta}
+I metodi con cui si possono accedere alle risore da appendere ad un URL sono:
+\begin{itemize}
+  \item GET: Transfer a current representation of the target resource;
+  \item HEAD: Same as GET, but only transfer the status line and header
+    section;
+  \item POST: Perform resource-specific processing on the    request payload;
+  \item PUT:  Replace all current representations of the target resource with
+    the request payload;
+  \item DELETE: move all current representations of the target resource;
+  \item CONNECT: ablish a tunnel to the server identified by the target
+    resource;
+  \item OPTIONS: describe the communication options for the target resource;
+  \item TRACE: perform a message loop-back test along the path to the target
+    resource.
+\end{itemize}
+
+Questi metodi sono inclusi nei parametri inviati nell'header, che oltre al
+metodo include: l'url a cui si vuole accedere e la versione del protocollo
+HTTP in utilizzo.
+
+\section{Risposta}
+\subsection{Header}
+La risposta di un server ad una richiesta http conterrà un header che include
+lo stato che può essere:
+\begin{itemize}
+     \item 1xx: Informational - Request received, continuing process;
+     \item 2xx: Success - The action was successfully received, understood, and
+       accepted;
+     \item 3xx: Redirection - Further action must be taken in order to complete
+       the request;
+     \item 4xx: Client Error - The request contains bad syntax or cannot be
+       fulfilled;
+     \item 5xx: Server Error - The server failed to fulfill an apparently valid
+       request;
+\end{itemize}
+
+L'header del protocollo HTTP 1.0 inoltre conterrà \emph{Connection Close},
+ovvero la segnalazione che la connessione è stata chiusa, dal protocollo
+HTTP 1.1 questa risposta non è più inclusa, ma la gestione delle connessioni
+aperte sarà implementata nel server con un meccanismo di timeout.
+
+\subsection{Body}
+Ogni risposta conterrà un body, ovvero il contenuto della risposta.
+
+\section{Proxy}
+I server proxy sono responsabili della cache, nell'header di richiesta è
+presente il parametro \emph{IfModifiedSince} che contiene una data nel formato
+GMT, nell'header di risposta viene mandato il parametro \emph{LastModified},
+è il server che confronta le date e valuta se generare una nuova richiesta.
