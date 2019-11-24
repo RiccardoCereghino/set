@@ -44,8 +44,7 @@
   <internal package="biblatex" priority="9" active="0">
     <generic>latex</generic>
     <provides type="dynamic">
-      <file>set.aux</file>
-      <file>set-blx.bib</file>
+      <file>set.bcf</file>
     </provides>
     <requires type="dynamic">
       <file>set.bbl</file>
@@ -53,7 +52,6 @@
     <requires type="static">
       <file>blx-dm.def</file>
       <file>blx-compat.def</file>
-      <file>blx-bibtex.def</file>
       <file>biblatex.def</file>
       <file>blx-natbib.def</file>
       <file>standard.bbx</file>
@@ -67,15 +65,13 @@
     </requires>
   </internal>
   <external package="biblatex" priority="5" active="0">
-    <generic>bibtex</generic>
+    <generic>biber</generic>
     <cmdline>
-      <binary>bibtex8</binary>
-      <option>--wolfgang</option>
-      <option>--min_crossrefs 2</option>
+      <binary>biber</binary>
       <infile>set</infile>
     </cmdline>
     <input>
-      <file>set.aux</file>
+      <file>set.bcf</file>
     </input>
     <output>
       <file>set.bbl</file>
@@ -84,13 +80,7 @@
       <file>set.bbl</file>
     </provides>
     <requires type="dynamic">
-      <file>set.aux</file>
-      <file>set-blx.bib</file>
-    </requires>
-    <requires type="editable">
-    </requires>
-    <requires type="static">
-      <file>biblatex.bst</file>
+      <file>set.bcf</file>
     </requires>
   </external>
 </requests>

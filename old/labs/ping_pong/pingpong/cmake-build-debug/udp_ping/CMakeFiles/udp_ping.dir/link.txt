@@ -1,0 +1,1 @@
+/usr/bin/cc -g  -rdynamic CMakeFiles/udp_ping.dir/udp_ping.c.o  -o udp_ping ../pingpong_lib/libpingpong_lib.a 

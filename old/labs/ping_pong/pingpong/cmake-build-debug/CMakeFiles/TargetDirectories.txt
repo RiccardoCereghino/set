@@ -1,0 +1,14 @@
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/CMakeFiles/rebuild_cache.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/CMakeFiles/pingpong_lib.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/pingpong_lib/CMakeFiles/edit_cache.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/CMakeFiles/rebuild_cache.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/CMakeFiles/pong_server.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/pong_server/CMakeFiles/edit_cache.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/CMakeFiles/rebuild_cache.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/CMakeFiles/tcp_ping.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/tcp_ping/CMakeFiles/edit_cache.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/CMakeFiles/rebuild_cache.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/CMakeFiles/udp_ping.dir
+/home/rick/uni/set/labs/pingpong/cmake-build-debug/udp_ping/CMakeFiles/edit_cache.dir
