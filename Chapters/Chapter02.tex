@@ -442,6 +442,36 @@ Il funzionamento per il  comando $(1)$ sarà:
     \end{itemize}
 \end{itemize}
 
-\section{Shell}
 La shell è il programma che attende la scrittura e l'invio dei comandi, una
 delle funzionalità è di espandere le variabili passate (es. *.c).
+
+\section{Scheduling}
+Lo scheduler è un programma che implementa un algoritmo di scheduling il quale,
+dato un insieme di richieste di accesso ad una risorsa, stabilisce un
+ordinamento temporale per l'esecuzione di tali richieste, privilegiando quelle
+che rispettano determinati parametri secondo una certa politica di scheduling,
+in modo da ottimizzare l'accesso a tale risorsa e consentire così
+l'espletamento del servizio/istruzione o processo desiderato.
+
+Funziona tramite i meccanismi di \emph{LDE} (user, kernel) e di context
+switching.
+
+Ricapitolando, il ciclo di vita di un processo:
+\begin{itemize}
+  \item init;
+  \item \emph{EMBRYO};
+  \item fork;
+  \item ready;
+  \item running;
+  \item zombie.
+\end{itemize}
+
+\subsection{Turn-around Time}
+\[
+  T_{TA}=T_{ \text{Completion}}-T_{ \text{Arrival}}
+\]
+
+\subsection{Response Time}
+\[
+  T_ { \text{RESP}}=T_{ \text{First Run}}-T_{ \text{Arrival}}
+\]

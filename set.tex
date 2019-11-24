@@ -1,122 +1,121 @@
-% **************************************************************************************************************
-% A Classic Thesis Style
-% An Homage to The Elements of Typographic Style
-%
-% Copyright (C) 2018 André Miede and Ivo Pletikosić
-%
-% If you like the style then I would appreciate a postcard. My address
-% can be found in the file ClassicThesis.pdf. A collection of the
-% postcards I received so far is available online at
-% http://postcards.miede.de
-%
-% License:
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2 of the License, or
-% (at your option) any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this program; see the file COPYING.  If not, write to
-% the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-% Boston, MA 02111-1307, USA.
-%
-% PLEASE SEE ALSO THE AUTHORS' NOTE REGARDING THIS LICENSE
-% IN THE DOCUMENTATION (ClassicThesis.pdf --> Chapter 1 / Chapter01.tex)
-% **************************************************************************************************************
-\RequirePackage{silence} % :-\
-    \WarningFilter{scrreprt}{Usage of package `titlesec'}
-    %\WarningFilter{scrreprt}{Activating an ugly workaround}
-    \WarningFilter{titlesec}{Non standard sectioning command detected}
-\documentclass[ twoside,openright,titlepage,numbers=noenddot,%1headlines,
-                headinclude,footinclude,cleardoublepage=empty,abstract=on,
-                BCOR=5mm,paper=a4,fontsize=11pti,table,usenames,dvipsnames
-                ]{scrreprt}
+% -*- Mode:TeX -*-
 
-%********************************************************************
-% Note: Make all your adjustments in here
-%*******************************************************
-\input{classicthesis-config}
+%% IMPORTANT: The official thesis specifications are available at:
+%%            http://libraries.mit.edu/archives/thesis-specs/
+%%
+%%            Please verify your thesis' formatting and copyright
+%%            assignment before submission.  If you notice any
+%%            discrepancies between these templates and the 
+%%            MIT Libraries' specs, please let us know
+%%            by e-mailing thesis@mit.edu
 
-%********************************************************************
-% Bibliographies
-%*******************************************************
-%\addbibresource{Bibliography.bib}
-%\addbibresource[label=ownpubs]{AMiede_Publications.bib}
+%% The documentclass options along with the pagestyle can be used to generate
+%% a technical report, a draft copy, or a regular thesis.  You may need to
+%% re-specify the pagestyle after you \include  cover.tex.  For more
+%% information, see the first few lines of mitthesis.cls. 
 
-%********************************************************************
-% Hyphenation
-%*******************************************************
-%\hyphenation{put special hyphenation here}
+%\documentclass[12pt,vi,twoside]{mitthesis}
+%%
+%%  If you want your thesis copyright to you instead of MIT, use the
+%%  ``vi'' option, as above.
+%%
+%\documentclass[12pt,twoside,leftblank]{mitthesis}
+%%
+%% If you want blank pages before new chapters to be labelled ``This
+%% Page Intentionally Left Blank'', use the ``leftblank'' option, as
+%% above. 
 
-% ********************************************************************
-% GO!GO!GO! MOVE IT!
-%*******************************************************
-\begin{document}
-\frenchspacing
-\raggedbottom
-\selectlanguage{italian} % american ngerman
-%\renewcommand*{\bibname}{new name}
-%\setbibpreamble{}
-\pagenumbering{roman}
+\documentclass[12pt,twoside]{mitthesis}
+\usepackage{lgrind}
+%% These have been added at the request of the MIT Libraries, because
+%% some PDF conversions mess up the ligatures.  -LB, 1/22/2014
+\usepackage{cmap}
+\usepackage[T1]{fontenc}
+
+%% Personal packages
+\PassOptionsToPackage{american,italian}{babel}
+\usepackage{babel}
+\selectlanguage{italian}
+
+\usepackage{csquotes}
+\PassOptionsToPackage{%
+  backend=biber,bibencoding=utf8, %instead of bibtex
+  language=auto,%
+  style=numeric-comp,%
+  %style=authoryear-comp, % Author 1999, 2010
+  %bibstyle=authoryear,dashed=false, % dashed: substitute rep. author with ---
+  sorting=nyt, % name, year, title
+  maxbibnames=10, % default: 3, et al.
+  %backref=true,%
+  natbib=true % natbib compatibility mode (\citep and \citet still work)
+}{biblatex}
+\usepackage{biblatex}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{ntheorem}
+\usepackage{float}
+\usepackage{import}
+\usepackage{xifthen}
+\usepackage{pdfpages}
+\usepackage{transparent}
+
+\newcommand{\incfig}[1]{%
+    \def\svgwidth{\columnwidth}
+    \import{./figures/}{#1.pdf_tex}
+}
+
+
+\let\numberset\mathbb
+\newcommand{\N}{\numberset{N}}
+\newcommand{\Z}{\numberset{Z}}
+\newcommand{\Q}{\numberset{Q}}
+\newcommand{\R}{\numberset{R}}
+\newcommand{\C}{\numberset{C}}
+\newcommand{\U}{\numberset{U}}
+\newcommand{\I}{\numberset{I}}
+\newcommand{\PP}{\numberset{P}}
+\newcommand{\CC}{\complement}
+\newcommand{\dom}{\text{dom }}
+\newcommand{\im}{\text{Im }}
+\newcommand{\foi}{\text{f.i.}}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\cc}{\mathcal{C}}
+\newcommand{\dd}{\mathrm{d}}
+
+\usepackage{listings}
+%\lstset{emph={trueIndex,root},emphstyle=\color{BlueViolet}}%\underbar} % for special keywords
+\lstset{language=C++,
+  morekeywords={PassOptionsToPackage,selectlanguage},
+  basicstyle=\small\ttfamily,
+  stringstyle=\rmfamily,
+  numbers=none,%left,%
+  numberstyle=\scriptsize,%\tiny
+  stepnumber=5,
+  numbersep=8pt,
+  showstringspaces=false,
+  breaklines=true,
+  %frameround=ftff,
+  %frame=single,
+  belowcaptionskip=.75\baselineskip
+  %frame=L
+}
 \pagestyle{plain}
-%********************************************************************
-% Frontmatter
-%*******************************************************
-%\include{FrontBackmatter/DirtyTitlepage}
-\include{FrontBackmatter/Titlepage}
-\include{FrontBackmatter/Titleback}
-%\cleardoublepage\include{FrontBackmatter/Dedication}
-%\cleardoublepage\include{FrontBackmatter/Foreword}
-%\cleardoublepage\include{FrontBackmatter/Abstract}
-%\cleardoublepage\include{FrontBackmatter/Publications}
-%\cleardoublepage\include{FrontBackmatter/Acknowledgments}
-\cleardoublepage\include{FrontBackmatter/Contents}
-%********************************************************************
-% Mainmatter
-%*******************************************************
-\cleardoublepage
-\pagestyle{scrheadings}
-\pagenumbering{arabic}
-%\setcounter{page}{90}
-% use \cleardoublepage here to avoid problems with pdfbookmark
-\cleardoublepage
-\part{Reti di calcolatori}\label{pt:intro}
+
+\begin{document}
+\newtheorem{alg}{Algoritmo}
+\newtheorem{theo}{Teorema}
+\newtheorem{defn}{Definizione}
+\newtheorem{dimo}{Dimostrazione}
+\newtheorem{coro}{Corollario}
+\newtheorem{prop}{Proposizione}
+
+\title{Algebra lineare e analisi numerica}
+
+\author{Riccardo Cereghino}
+\pagestyle{plain}
+\include{contents}
 \include{Chapters/Chapter01}
-\part{Sistemi operativi}
-\include{Chapters/Chapter02}
-%\cleardoublepage
-%\ctparttext{You can put some informational part preamble text here.
-%Illo principalmente su nos. Non message \emph{occidental} angloromanic
-%da. Debitas effortio simplificate sia se, auxiliar summarios da que,
-%se avantiate publicationes via. Pan in terra summarios, capital
-%interlingua se que. Al via multo esser specimen, campo responder que
-%da. Le usate medical addresses pro, europa origine sanctificate nos se.}
-%\part{The Showcase}\label{pt:showcase}
-%\include{Chapters/Chapter02}
-%\addtocontents{toc}{\protect\clearpage} % <--- just debug stuff, ignore
-%\include{Chapters/Chapter03}
-%\include{multiToC} % <--- just debug stuff, ignore for your documents
-% ********************************************************************
-% Backmatter
-%*******************************************************
-\appendix
-\renewcommand{\thechapter}{\alph{chapter}}
-\cleardoublepage
-\part{Utilità}
-\include{Chapters/Chapter0A}
-%********************************************************************
-% Other Stuff in the Back
-%*******************************************************
-%\cleardoublepage\include{FrontBackmatter/Bibliography}
-%\cleardoublepage\include{FrontBackmatter/Declaration}
-%\cleardoublepage\include{FrontBackmatter/Colophon}
-% ********************************************************************
-% Game Over: Restore, Restart, or Quit?
-%*******************************************************
+%\include{biblio}
 \end{document}
-% ********************************************************************
+

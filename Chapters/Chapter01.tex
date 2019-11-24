@@ -16,11 +16,6 @@ Per esempio la syscall send, copia dalla ram una certa sezione di memoria nel
 NIC, che verrà inviata in rete.
 
 \subsection{TCP/UDP}
-\begin{figure}[t]
-\includegraphics[width=.8\textwidth]{gfx/chadudp.jpg}
-\centering
-\end{figure}
-
 Il protocollo TCP garantisce l'invio del messaggio, dato che attende una
 risposta da parte del ricevente.
 Il protocollo UDP invia datagrammi, ma non si è certi se la ricezione è
@@ -196,9 +191,9 @@ inoltre dichiara che gli indirizzi che cominciano con $10.$ appartengono alla
 \emph{classe A}, questi indirizzi sono i cosiddetti indirizzi privati,
 utilizzabili solo in \textbf{LAN}.
 
-Gli indirizzi di classe \textbf{B} cominciano da $192.168.0.0$ per arrivare
-fino $192.168.255.255$, sono sempre indirizzi privati.
+Gli indirizzi di classe \textbf{B} cominciano da $192.168.0.0$.
 
+Arrivano fino $192.168.255.255$, sono sempre indirizzi privati.
 
 Si può configurare il router per usare il \textbf{NAT} (Network Access
 translator), con lo scopo di assegnare due indirizzi IP allo stesso router,
@@ -689,9 +684,12 @@ che abilita la modalità passiva.
 
 \subsection{Funzionamento}
 Prima viene aperta la connessione attraverso il canale di controllo, quindi
-vengono inviati i dati di autenticazione formattati come:\newline
-USER username\newline
-PASS password\newline
+vengono inviati i dati di autenticazione formattati come:
+
+\begin{tabular}{c c}
+USER username\\
+PASS password
+\end{tabular}
 
 Nel caso di successo il server riponde con $200OK$.
 

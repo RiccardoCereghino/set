@@ -1,0 +1,477 @@
+\chapter{Introduzione ai sistemi operativi}
+\begin{figure}[ht]
+  \centering
+  \incfig{struttura}
+  \caption{Struttura base di un calcolatore}\label{fig:struttura}
+\end{figure}
+
+Lo scopo di questa sezione è di virtualizzare le componenti fisiche di un
+calcolatore per renderne più facile l'utilizzo.
+
+Sinonimi di \emph{sistema operativo} sono \textbf{macchina virtuale} (virtual
+machine) e \textbf{gestore dlle risorse} (resource manager).
+
+\section{Virtualizzazione della CPU}
+L'unica nota in questo programma è l'utilizzo della funzione \emph{spin ()}, che
+controlla l'orologio di sistema fino a quanto $1$ minuto non è passato, quindi
+riprende l'esecuzione.
+
+\lstinputlisting[caption=Interazione con la  CPU usando la funzione spin()]{listings/cpu.c}
+
+Da notare che se il programma viene eseguito con un comando del tipo:
+\begin{lstlisting}[language=bash,caption=Esecuzione in concorrenza]
+prompt> ./cpu A & ./cpu B &./cpu C & ./cpu D
+[7353]
+[7354]
+[7355]
+[7356]
+A
+B
+D
+C
+A
+B
+D
+C
+A
+...
+\end{lstlisting}
+
+Possiamo osservare che sembra che vengano eseguiti simultaneamente quattro
+programmi diversi, ciò è dovuto alla \emph{virtualizzazione della CPU}.
+
+\section{Memoria virtualizzata}
+\lstinputlisting[caption=Dimostrazione dell'utilizzo di indirizzi virtuali]{listings/mem.c}
+
+La memoria \textbf{RAM} è generalmente virtualizzata, difatti se eseguiamo
+il programma precedente con un comando tipo:
+\begin{lstlisting}[language=bash,caption=Esecuzione in concorrenza]
+prompt > ./mem &; ./mem &
+[1] 24113
+[2] 24114
+(24113) address pointed by p: 0x200000
+(24114) address pointed by p: 0x200000
+(24113) p: 1
+(24114) p: 1
+(24113) p: 2
+(24114) p: 2
+(24113) p: 3
+(24114) p: 3
+(24113) p: 4
+(24114) p: 4
+...
+\end{lstlisting}
+
+Possiamo osservare il funzionamento della virtualizzazione della memoria,
+infatti ogni programma è lanciato in un proprio \textbf{virtual address space};
+semplifica la gestione della memoria per il programma ed è mappato ad una
+sezione della memoria fisica.
+
+\section{Periferiche}
+Nell'interazione di un calcolatore con le periferiche, è il kernel che
+interagisce direttamente con l' hardware, mentre le applicazioni possono
+utilizzare le periferiche solo attraverso il kernel.
+
+
+Vi sono $4$ diversi livelli di privilegi per interagire con i dispositivi:
+\begin{itemize}
+  \item $0$, il livello più privilegiato, utilizzato dal kernel;
+  \item $1$ solitamente non utilizzato;
+  \item $2$ solitamente non utilizzato;
+  \item $3$ il livello meno provilegiato, utilizzato da tutti gli utenti
+    compreso l'utente di \emph{root}.
+\end{itemize}
+
+Se l'utende richiede un interazione con una periferica, un comando di
+\emph{TRAP} viene inviato al kernel, il quale restituise un comando di
+\emph{return from TRAP}.
+
+\section{Memoria}
+\subsection{Spazi di indirizzamento}
+Ad ogni processo in esecuzione corrisponde un \emph{address space}, una
+virtualizzazione della memoria che comporta diversi vantaggi, tra cui non
+permettere ai programmi di modificare memoria non nella propria \emph{address
+space} ed in generale un efficienza maggiore.
+
+Lo spazio di indirizzamento non può essere più grande della memoria fisica ed
+occupa una sezione di memoria contigua.
+
+Utilizzando questo metodo abbiamo due problemi di frammentazionem interna ed
+esterna.
+
+
+Un processo è composto da:
+\begin{itemize}
+  \item \textbf{codice:} statico, regione fissa;
+  \item \textbf{dati:} regione fissa;
+  \item \textbf{stack:} regione dinamica, può crescere o diminuire;
+  \item \textbf{heap:} regione dinamica.
+\end{itemize}
+
+
+Quindi l'address space è composto, in ordine, da:
+\begin{itemize}
+  \item \textbf{codice del programma:} dove risiedono le istruzioni;
+  \item \textbf{heap:} contiene i dati creati con i \emph{malloc} e le
+    strutture dinamiche, cresce verso il basso;
+  \item \textbf{memoria libera:} che può essere occupata dallo heap e dallo
+    stack;
+  \item \textbf{stack:} dove risiedono le variabili locali, i valori di ritorno
+    delle funzioni, etc. e cresce verso l'alto.
+\end{itemize}
+
+
+All'interno del sistema operativo è contenuta una struttura dati che contiene
+informazioni relative ai processi in memoria, \textbf{PCB} (Process Control
+Bloc).
+
+\subsection{Virtualizzazione}
+Gli obiettivi della virtualizzazione sono: trasparenza, efficienza e protezione
+ovvero un programma non deve accorgersi che sta utilizzando solo una porzione
+della memoria disponibile.
+
+
+Per implementare queste funzioni si utilizza una \textbf{MMU}; al suo interno
+salviamo un registro chiamato base, il quale cambia a seconda del programma
+in esecuzione.
+
+Questa implementazione non è corretta in quanto non abbiamo indicato un limite
+al valore che possiamo assegnare alla base, quindi i processi potrebbero
+accedere a memoria successiva alla loro, per cui sono gestiti anche i limiti
+su quali valori posso assegnare al registro base.
+
+Nel caso di un \textit{segmentation fault} (errore relativo all'accesso di
+memoria non propria) vengono sollevati gli \textbf{interrupt handlers}, e gli
+\textbf{exception handlers}, i quali gestiscono le eccezioni.
+Altri errori simili che sollevano un interrupt sono la divisione per $0$.
+
+Gli interrupt possono anche essere utilizzati per interagire con il sistema
+operativo, il sistema operativo può disabilitare gli interrupt.
+
+\subsection{Frammentazione}
+La frammentazione interna è composta dalla memoria allocata per un programma,
+ma non utilizzata.
+
+La frammentazione esterna invece è la memoria che non viene utilizzata perchè
+non abbastanza grande da ospitare un processo e tra due address spaces.
+
+Il \textit{compattamento} della memoria non è una soluzione attuabile in quanto
+sarebbe estrememante inefficiente.
+
+Esistono diversi metodi per poter utilizzare le porzioni di memoria
+frammentata.
+
+\subsubsection{Segmentazione}
+La segmentazione è utilizzata per poter utilizzare la memoria frammentata
+esternamente.
+Si utilizza la \textit{rilocazione dinamica}, ovvero la traduzione di indirizzi
+logici in indirizzi fisici attraverso una funzione di rilocazione implementata
+nell'hardware, \textbf{MMU}.
+
+
+\paragraph{Registri base limite}
+Nell' $8086$ in $16bit$ la segmentazione era classificata in:
+\begin{itemize}
+  \item \textbf{CS:} code segment;
+  \item \textbf{DS:} data segment;
+  \item \textbf{SS:} stack segment;
+  \item \textbf{ES:} extra segment.
+\end{itemize}
+
+In questa versione, la \textbf{MMU} mantiene una lista di registri \textit{
+base/limite}, ad ogni coppia corrisponde un segmento di memoria frammentata,
+la base contiene il primo indirizzo di memoria utile, mentre il limite quanta
+memoria contigua è disponibile.
+
+Nel momento in cui il processore genere un indirizzo virtuale prende in
+considerazione questi registri; l'indirizzo viene generato in fase di \textit{
+fetch} dell'istruzione.
+Se l'indirizzo generato supera il valore contenuto nel registro limite, un
+eccezione viene generata in quanto l'indirizzo richiesto non apparterrebbe al
+segmento.
+
+\paragraph{Tabelle dei descrittori}
+L'architettura $386$, risolve due problemi relativi alla precedente soluzione:
+una più veloce risoluzione dei permessi ed il limite di registri salvabili
+in MMU.
+
+
+Per ottenere l'indirizzo di memoria giusto viene ora utilizzata una parola che
+indica sia il \emph{segmento} di riferimento che l'offset all'interno del
+segmento (indirizzo virtuale).
+
+
+Inoltre viene introdotta una struttura dai tabellare, mantenuta all'interno
+della memoria riservata del sistema operativo, detta \textit{tabella dei
+descrittori}, contenente i dati relativi alla coppia dei registri \textit{base/
+limite} di ogni segmento, il bit di protezione e la gestione dei privilegi
+DPL).
+La MMU conterrà soltanto due registri, \textbf{STLR} (Segment Table Limit
+Register) la dimensione della tabella dei segmenti e \textbf{STBR} (Segment
+Table Base Register) l'indirizzo base della tabella dei segmenti.
+
+\begin{itemize}
+  \item \textbf{CS:} code segment, con una local descriptor table;
+  \item \textbf{DS:} data segment, con una global descriptor table;
+  \item \textbf{SS:} stack segment;
+  \item \textbf{ES:} extra segment.
+\end{itemize}
+\[
+  MAX(CPL \quad RPL) \leq DPL \quad BASE + OFFSET
+\]
+
+I segmenti di codice (\textbf{CS}) possono essere utilizzati da più processi
+uguali.
+
+Quindi le funzioni \textit{Jmp, Call e Ret} per accedere ad un segmento
+utilizzano due dati: \textbf{offset} e \textbf{selettore offset}.
+
+Definiamo \textbf{EIP} (Instruction Pointer) e \textbf{ESP} (Stack Pointer),
+rispettivamente appartengono ad un determinato \textbf{CS} (Code Segment) e
+\textbf{SS} (Stack Segment).
+
+\textbf{EIP} e \textbf{CS} alla chiamata di \textit{Jmp, Call o Ret}, verranno
+salvati nello stack (\textbf{ESP}).
+
+
+
+Il \textbf{Call Gate} è uno strato che si aggiunge all'indirizzo virtuale per
+non permettere l'erroneo accesso a sezioni di memoria non utilizzabili dall'
+utente o dal programma.
+
+
+Ogni livello di privilegio ha uno \textbf{stack separato}, per offrire una
+maggiore stabilità del sistema, quindi se una \emph{Call} cambia il livello
+di privilegio dovrà anche cambiare lo \emph{stack}: se il livello di privilegio
+si riduce, tutti i registri che contengono riferimenti a sezioni di memoria
+privilegiata vengono azzerati.
+
+\paragraph{Interrupt}
+Se l'utente è kernel, al momento dell'arrivo di un interrupt non c'è bisogno
+di cambiare lo stack, altrimenti sì.
+
+All'arrivo di un interrupt \textbf{eflag} (flag dell'interrupt) viene salvato,
+quindi l'interrupt viene disattivato, \textbf{iret} esce dall'interrupt
+handler.
+
+
+\subsection{Paginazione}
+Per il processo la paginazione è trasparente.
+La memoria fisica è divisa equamente in \textbf{page frame}, la
+virtualizzazione corrispondente sono le \textbf{pagine}, ovvero le pagine sono
+ordinate, mentre la rappresentazione nel \textbf{page frame} non è
+necessariamente ordinata, ma i \textbf{page frame} sono numerati.
+Le pagine sono grandi $4096byte$, in generale sempre potenze di $2$.
+
+
+Quindi si utilizza una tabella di appoggio, lunga tanto quanto il numero di
+pagine, per associare \emph{page frames} a \emph{pagine}, in questa tabella la
+colonna \textbf{present}(flag), vero se la pagina è utilizzata nella memoria
+fisica.
+Una tabella simile è creata ed associata per ogni processo, la tabella è
+creabile e modificabile solo dal kernel.
+
+
+Dato un indirizzo virtuale si divide per la grandezza della pagina per ottenere
+il numero della pagina, quindi dalla tabella di appoggio si seleziona il \emph{
+page frame} corrispondente, quindi si utilizza il resto della divisione per
+determinare l'indirizzo di \textbf{memoria fisica} corrispondente.
+\[
+  \text{Indirizzo fisico} = \text{Indirizzo virtuale}/3 * \text{Grandezza delle
+  pagine} + \text{Indirizzo virtuale} \% 3 
+\]
+
+Stabilita la grandezza della pagina si interpretano i primi $bit$ dell' 
+indirizzo virtuale per trovare il numero di pagina, mentre il restante si usa
+come \emph{offset}, dato l'indirizzo della base si appende l'offset per
+ottenere l'indirizzo fisico.
+
+
+La paginazione usa appunto le \textbf{paging tables}, per ogni riga abbiamo:
+\begin{itemize}
+  \item il \textbf{PPN} (Physical Page Number);
+  \item un bit di validità;
+  \item un bit di presenza (se la pagina è presente);
+  \item un bit di accesso (se ha già acceduto);
+  \item un bit di modifica;
+  \item dei bit per il livello di privilegio (r,w,x).
+\end{itemize}
+
+
+Per migliorare l'efficienza si utilizza una cache, la \textbf{TLB}
+(Translation Lookaside Buffer), da un \textbf{VPN} (Virtual Page Number),
+si ottiene il \textbf{PPN} (Physical Page Number) ed il \textbf{PFN}
+(Physical Frame Number).
+
+
+Per migliorare ulteriormente la paginazione, non si utilizzano i bit di
+accesso e modifica, sarà quindi il kernel a tenere traccia di questi valori,
+lo stesso ragionamento si può fare per i bit sui permessi.
+
+\paragraph{Osservazione}
+Per indiciare una ram di $4GB$ sono necessari $32bit$, un indirizzo virtuale
+è composto da $20bit$ per selezionare la pagina e:
+\begin{itemize}
+  \item $v=1bit$;
+  \item $p=1bit$;
+  \item $r/w/x=3bit$;
+  \item $d=1bit$.
+\end{itemize}
+
+Quindi abbiamo un totale di $27bit$ ($32bit$ normalizzati), per una RAM da
+$4GB$ la \emph{paging table} occuperebbe $400mb$ di memoria contigua nella
+RAM.
+
+Per rendere più efficiente la tabella, i $20bit$ di indirizzamento di dividono
+logicamente in 2 blocchi da $10bit$, il primo per indirizzare il blocco di
+memoria, il secondo per ottenere l'effettivo indirizzo fisico.
+
+Il primo blocco in realtà indirizza su di una nuova tabella di appoggio il cui
+contenuto sarà se la pagina è occupata o no e l'indirizzo della tabella
+corrispondente, quindi si usa la tabella di appoggio ed il secondo blocco di
+$10bit$ per ottenere l'indirizzo fisico.
+
+\subsubsection{Base limite, Segmentazione e paginazione}
+Compariamo i sistemi di suddivisione della memoria: \textbf{B+L}, \textbf{
+segmentazione} e \textbf{paginazione}.
+
+B+L:
+\begin{itemize}
+  \item $?$ spazio di indirizzamento contiguo in \emph{RAM};
+  \item $-$ frammentazione interna;
+  \item $-$ frammentazione esterna;
+  \item $-$ condivisione codice;
+  \item $+$ isolamento\\protezione;
+  \item $-$ efficiente;
+  \item $-$ spazio di indirizzamento contiguo.
+\end{itemize}
+
+Segmentazione:
+\begin{itemize}
+  \item $?$ spazio di indirizzamento contiguo nel segmento, ma non nel processo
+    ;
+  \item $-$ frammentazione interna;
+  \item $-$ frammentazione esterna;
+  \item $\mp$ condivisione codice;
+  \item $+$ isolamento\\protezione;
+  \item $\pm$ efficiente;
+  \item $-$ spazio di indirizzamento contiguo.
+\end{itemize}
+
+Paginazione:
+\begin{itemize}
+  \item $-$ spazio di indirizzamento non contiguo;
+  \item $\pm$ frammentazione interna ($4k$);
+  \item $-$ frammentazione esterna;
+  \item $\mp$ condivisione codice;
+  \item $+$ isolamento\\protezione;
+  \item $\pm$ efficiente;
+  \item $-$ spazio di indirizzamento contiguo.
+\end{itemize}
+
+\section{System calls}
+\subsection{fork}
+La funzione \emph{fork} crea un processo quasi identico al processo padre e
+restituisce un numero positivo chiamato \emph{pid\_t}.
+Ogni processo ha un \emph{ppid} ( \emph{pid} del padre).
+
+\subsection{exit}
+La funzione \emph{exit} ritorna $0$ se il processo si chiude correttamente,
+altrimenti un numero.
+
+\subsection{wait}
+Ritorna un \emph{pid\_t} quando il processo passato come argomento termina. 
+
+\subsection{exec}
+Sostituisce il processo corrente con uno nuovo, l'argomento è un PATH.
+
+\subsection{open}
+Apre un file e gli assegna il primo file descriptor disponibile.
+
+\subsection{dup}
+Duplica un fd creandone uno nuovo che punta allo stesso oggetto.
+
+\subsection{dup2}
+La dup2 ha due parametri, il primo il vecchio file descriptor ed il secondo il
+nuovo, duplica il primo parametro nel secondo, fa una close del secondo
+parametro nel caso fosse già aperto.
+
+\subsection{pipe}
+\begin{lstlisting}[
+  language=bash,
+  escapeinside={(£}{£)},
+  caption={
+    Esempio di pipe (|)
+  }
+]
+# (1)
+ls -l | grep cammello
+
+# (2)
+ls -l > camelus
+grep cammello < camelus
+\end{lstlisting}
+
+L'operatore $|$ permette di chiamare la syscall \textit{pipe()} la quale
+permette di eseguire l'operazione esclusivamente in memoria, difatti nel
+secondo esempio \textit{camelus} sarebbe scritto su disco e, su risultati
+molto grandi sarebbe molto più lento ed inefficiente.
+
+Quindi \textit{pipe(fds)} prende come argomento un array di file descriptors
+ed utilizza un buffer riservato al kernel per svolgere la lettura.
+
+Il funzionamento per il  comando $(1)$ sarà:
+\begin{itemize}
+  \item il processo padre chiama la \textit{pipe()}, $2$ \textit{fork()},
+    \textit{close(3)}, \textit{close(4)} e $2$ \textit{wait()};
+  \item la prima figlia \textit{ls -l} chiama:
+    \begin{itemize}
+      \item \textit{close(1)};
+      \item \textit{dup(3)};
+      \item \textit{close(2)};
+      \item \textit{close(4)} dove $4$ è il fd della pipe;
+      \item \textit{exec(...)};
+    \end{itemize}
+  \item la seconda figlia \textit{grep cammello} chiama:
+    \begin{itemize}
+      \item \textit{close(0)};
+      \item \textit{dup(4)}, dove $3$ è il file descriptor della fork;
+      \item \textit{close(2)};
+      \item \textit{close(4)} dove $4$ è il fd della pipe;
+      \item \textit{exec(...)};
+    \end{itemize}
+\end{itemize}
+
+La shell è il programma che attende la scrittura e l'invio dei comandi, una
+delle funzionalità è di espandere le variabili passate (es. *.c).
+
+\section{Scheduling}
+Lo scheduler è un programma che implementa un algoritmo di scheduling il quale,
+dato un insieme di richieste di accesso ad una risorsa, stabilisce un
+ordinamento temporale per l'esecuzione di tali richieste, privilegiando quelle
+che rispettano determinati parametri secondo una certa politica di scheduling,
+in modo da ottimizzare l'accesso a tale risorsa e consentire così
+l'espletamento del servizio/istruzione o processo desiderato.
+
+Funziona tramite i meccanismi di \emph{LDE} (user, kernel) e di context
+switching.
+
+Ricapitolando, il ciclo di vita di un processo:
+\begin{itemize}
+  \item init;
+  \item \emph{EMBRYO};
+  \item fork;
+  \item ready;
+  \item running;
+  \item zombie.
+\end{itemize}
+
+\subsection{Turn-around Time}
+\[
+  T_{TA}=T_{ \text{Completion}}-T_{ \text{Arrival}}
+\]
+
+\subsection{Response Time}
+\[
+  T_ { \text{RESP}}=T_{ \text{First Run}}-T_{ \text{Arrival}}
+\]

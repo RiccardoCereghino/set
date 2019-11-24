@@ -1,0 +1,767 @@
+\chapter{Accenni al funzionamento di un calcolatore}
+Un calcolatore è generalmente composto da:
+\begin{itemize}
+  \item la $CPU$, esegue le istruzioni, tiene in memoria ($Instruction Register$)
+    l'istruzione corrente e la posizione dell'istruzione nella RAM ($P.C.$);
+  \item la $RAM$, tiene in memoria le istruzioni da eseguire, certe sezioni
+    sono riservate per specifiche funzioni ($stack$, $SP$, $BP$);
+  \item dei moduli, come un disco fisso o altro;
+  \item la $NIC$, che permette di inviare e ricevere pacchetti in rete.
+\end{itemize}
+
+\section{Networking}
+Vengono effettuate delle syscall, per eseguire operazioni necessario all'invio
+di dati.
+Per esempio la syscall send, copia dalla ram una certa sezione di memoria nel
+NIC, che verrà inviata in rete.
+
+\subsection{TCP/UDP}
+\begin{figure}[t]
+\includegraphics[width=.8\textwidth]{gfx/chadudp.jpg}
+\centering
+\end{figure}
+
+Il protocollo TCP garantisce l'invio del messaggio, dato che attende una
+risposta da parte del ricevente.
+Il protocollo UDP invia datagrammi, ma non si è certi se la ricezione è
+avvenuta.
+
+\subsection{Device driver}
+E' un modulo che gestisce le risore fisiche dei vari moduli, tra cui NIC,
+gestiscono le interruzioni del dispositivo.
+
+\section{Trasmissione di dati}
+\subsection{Invio di dati}
+Il DMA presente nel NIC è il componente che accede alla memoria.
+
+La maggior parte dei calcolatori include l'unità di gestione della memoria MMU,
+che permette al processore di gestire indirizzi virtuali per ottenere una
+maggiore efficienza, ma questo dispositivo è esclusivo del processore, motivo
+per cui il DMA del NIC utilizzerà indirizzi fisici.
+
+Delle porzioni di memoria della RAM saranno destinate ad essere utilizzate per
+i \emph{buffer}, ovvero delle aree dove NIC può immagazzinare i dati da inviare
+o da ricevere.
+
+Al momento dell'invio di un datagramma, esso verà salvato in un buffer, quindi
+inviato in rete appena possibile, quindi cancellato dalla memoria.
+
+\subsection{Ricezione di dati}
+Per la ricezione di datagrammi dei buffer devono essere sempre disponibili,
+cosicchè NIC possa utilizzarli una volta ricevuto il pacchetto.
+
+Il datagramma ricevuto sarà inserito dal DMA in un buffer, un interrupt nel
+frattempo creeà nuovi buffer per possibili nuovi messaggi, quindi il sistema
+legge il buffer copiandolo nel buffer dell'applicazione, direzionando l'output
+verso l'utente corretto, quindi la memoria viene liberata.
+
+Il comportamento standard di un applicazione che implementa networking 
+implementa un meccanismo bloccante per cui l'applicazione rimane in attesa
+fintanto che il buffer non è stato scritto al suo interno.
+
+\subsection{Trasmissione di dati su bus ring based}
+La problematica principale del DMA di tipo \emph{bus mastering} è la
+necessità di dover programmare in anticipo i buffer allocati, limitandone
+la capacità.
+
+Fintanto che il DMA è impegnato in un operazione perchè in attesa del
+processore verrano persi i dati nel frattempo ricevuti dalla rete.
+
+Per risolvere questo problema si implementa una struttura dati più complicata,
+integrando una piccola CPU all'interno della NIC (ring based).
+
+\subsubsection{Ring}
+Il ring è composto da un anello contenente più di un buffer, e due puntatori,
+un puntatore di inizio ed uno di fine gestiti da due processori diversi;
+la CPU si occupa di aggiungere elementi all'interno del ring quindi gestirà
+l'indice di fine, il puntatore al primo elemento viene gestito dal processore
+all'interno della NIC.
+SI ottiene una coda di buffer che si possono aggiungere o togliere a seconda
+se si sta gestendo un invio o ricezione di dati.
+
+Quindi la NIC legge i buffer in memoria e usa un flag per impostare se il
+buffer è libero oppure se deve essere processato.
+
+L'unico tipo di comunicazione tra processore e DMA è la trasmissione della 
+quantità di buffer che dovranno essere utilizzati al DMA.
+
+\subsection{Commutazione}
+Si rende necessario, per una questione di efficienza, un circuito fisico $R$
+attraverso cui trasmettere i pacchetti.
+
+I pacchetti sono inviati come datagrammi, e nella struttura includono il
+destinatario e le informazioni trasmesse.
+
+\subsection{Dataflow}
+L' \emph{host} compila ed invia il buffer in locale al buffer di ricezione di
+$R1$(router), il cui compito è di leggere il datagramma, ricavarne il
+destinatario, quindi di inviarlo: l'hos può quindi cancellare il buffer.
+
+La parte ricevente ($R2$) copia il datagramma nel suo buffer di ricezione,
+quindi $R1$ può rimuovere dal proprio buffer il datagramma.
+Quindi $R2$ invia il datagramma all'effettivo destinatario con un altro
+\emph{store and forward}.
+
+Ogni passaggio di trasmissione del datagramma viene chiamato \emph{hop}.
+
+\subsection{Routing}
+Identifichiamo per il processo di routing l' \emph{host}, gli endpoint della
+trasmissione di pacchetti e i \emph{router}, calcolatori.
+Più router possono essere collegati tra loro.
+
+\section{Internet protocol stack}
+\begin{enumerate}
+  \item Physical
+  \item Datalink
+  \item Network
+  \item Transport
+  \item Application
+\end{enumerate}
+
+\subsection{Protocollo fisico}
+L'unico protocollo fisico sopravissuto ed in uso è il protocollo ethernet.
+
+Ogni richiesta sarà composta da: header, payload e trailer.
+
+Il protocollo definisce che ad ogni host venga assegnato un indirizzo
+\emph{MAC}, composto da $6byte$.
+
+L'header conterrà come dati gli indirizzi IP e le porte dei nodi comunicanti.
+
+Il trailer è necessario per il controllo di integrità nella rete ethernet, l'
+algoritmo utilizzato è \textbf{CRC32}.
+
+\emph{Il datalink utilizza le stesse modilità di funzionamento del protocollo
+fisico}.
+
+\subsection{Network protocol}
+Il protocollo network utilizza come gestore degli indirizzi i protocolli
+\emph{IPv4 e IPv6}.
+Ipv4 utilizza $4byte$ per il funzionamento, significa che può gestire fino a 
+circa $4$ miliardi di indirizzi, mentre ipv6 ne può utilizzare molti di più.
+
+I primi sviluppatori dei protocolli non avevano la possibilità
+di interagire direttamente con i sistemi operativi, motivo per cui si è dovuto
+introdurre il concetto di \textbf{porta di comunicazione}, un numero intero
+in $16bit$, con cui si identifica univocamente un numero di una porta ad una
+tipologia di applicazione.
+
+Le porte da $0$ a $1023$ sono state dedicate ai protocolli internet ed alle
+applicazioni più comuni, un altra serie di porte sono sempre utilizzate per
+il networking  mentre le restanti sono le così dette porte effimere che vengono
+utilizzate dalle applicazioni in locale.
+
+Quindi se la porta è la parte che un calcolatore espone ad internet, il
+\emph{socket} è il corrispettivo componente nel nodo in locale, così da
+associare alla richiesta una macchina ed applicazione in particolare.
+
+
+Sono usati i protocolli \emph{UDP} e \emph{text}
+Il protocollo \emph{UDP} invia datagrammi mentre il protocollo \emph{TCP}
+permette di implementare una modalità di comunicazione più avanzata, di tipo
+\emph{stream}, che permette di interagire con l'interfaccia di comunicazione
+come se fossero file.
+
+Gli indirizzi \textbf{IP} sono utilizzati per essere associati agli indirizzi
+\textbf{MAC} nel network.
+
+IL \emph{TTL} (Time To Live) definisce da quanto tempo un pacchetto è nel
+network.
+
+\emph{RFC} (Remote Function Call) cerca prima di chiamare le versioni dei
+protocolli più recenti prima di doverne eseguire uno più vecchio.
+
+\subsubsection{Indirizzi}
+Ad ogni macchina corrisponde un IP ($IPv4$ o $IPv6$)
+\begin{figure}[H]
+    \centering
+    \incfig{indirizzi}
+    \caption{indirizzi}
+    \label{fig:indirizzi}
+\end{figure}
+
+Un indirizzo $IPv4$ in default è composto da:
+\begin{itemize}
+  \item $29bit$ dedicati al network;
+  \item $3bit$ dedicati all'host.
+\end{itemize}
+Per ovviare a problemi di carenza di indirizzi IP, si introduce il concetto
+di \emph{NETMASK}, una parola composta da una serie di $1$ ed una di $0$, gli
+$1$ rappresentano quanti bit sono dedicati al network, gli $0$ per l'host.
+
+\paragraph{Indirizzi privati}
+Sono definiti nel protocollo \emph{RFC 1918} dichiara che un indirizzo
+\textbf{IPv4} deve essere composto da $4$ numeri decimali seguiti da punto,
+inoltre dichiara che gli indirizzi che cominciano con $10.$ appartengono alla
+\emph{classe A}, questi indirizzi sono i cosiddetti indirizzi privati,
+utilizzabili solo in \textbf{LAN}.
+
+Gli indirizzi di classe \textbf{B} cominciano da $192.168.0.0$ per arrivare
+fino $192.168.255.255$, sono sempre indirizzi privati.
+
+
+Si può configurare il router per usare il \textbf{NAT} (Network Access
+translator), con lo scopo di assegnare due indirizzi IP allo stesso router,
+con lo scopo di esporne uno alla rete locale e l'altro a quella internet.
+
+Con il NAT è possibile convertire indirizzi pubblici in indirizzi privati,
+direzionando i messaggio alla macchina corretta sostituendo il proprio
+indirizzo alla richiesta assegnando una porta libera.
+
+\subsection{Trasporto}
+Vengono utilizzato i protocolli \emph{UDP} e \emph{TCP} e la tecnica della
+\emph{3 way handshake}.
+
+\begin{figure}[ht]
+    \centering
+    \incfig{3some}
+    \caption{Three way handshake}
+    \label{fig:3some}
+\end{figure}
+
+Il trasporto comincia con l'invio di un messaggio \textbf{SYN} (accompagnato
+da \textbf{SEQ}), all'arrivo
+il server risponde con un messaggio che viene chiamato \textbf{SYN-ACK}, la
+\textbf{SEQ} e la \textbf{ACK};
+quindi l'host invia un uteriore messaggio chiamato \textbf{ACK}, oltre che
+i dati.
+
+L'header TCP contiene una serie di informazioni tra le quali i \textbf{FLAG}
+SYN e ACK oltre che la porta sorgente (\textbf{SPORT}) e di destinazione
+(\textbf{DPORT}).
+
+
+Vengono utilizzate $2$ parole, la \textbf{SEQ} e la \textbf{ACK}, permettono
+la di realizzare l'astrazione dello stream di byte; questi numeri per motivi
+di sicurezza non partono da $0$, ma da un valore casuale; lo scopo della
+prima squenza di passaggi è di scambiare queste informazioni.
+
+Inoltre \textbf{SEQ} segnala anche l'inizio dello stream di byte da leggere.
+
+Se il messaggio viene suddiviso in tanti datagrammi cumulativi, viene inviato un unico \textbf{ACK cumulativo}.
+
+Il \textbf{timeout} è il tempo che il processo impiega ad inviare e ricevere i
+messaggi, dipende dalla lunghezza dei messaggi e dalla velocità dei
+calcolatori.
+
+La \textbf{media mobile} dà più peso agli ultimi valori, si rende necessaria
+per calcolare il tempo di timeout.
+\[
+  \text{Estimated }=(1-\alpha)\times\text{ Estimated}+\alpha\text{ SampleRTT}
+\]
+
+Inoltre si usa una stime della variabilità:
+\[
+  \text{Dev}=(1-\beta)\times\text{ Dev}+\beta\times\mid\text{SampleRTT}-
+  \text{Estimated}\mid
+\]
+
+I parametri $\alpha,\beta$ hanno un valore consigliato: $\alpha=\dfrac{1}{8}$,
+$\beta=\dfrac{1}{4}$.
+
+Quindi inizialmente viene assegnato un valore fisso viene inizialmente
+assegnato ad \emph{Estimated} e \emph{Dev}, quindi il primo messaggio viene
+inviato, quindi nel primo scambuio, in cui il client riceve il \emph{SYN-ACK},
+si ottiene il primo \emph{SampleRTT}.
+
+Quindi si possono comparare i valori \emph{Estimated} e \emph{Dev},
+(Deviazione) ogni scambio di \emph{ACK e SIN-ACK}.
+
+Il \textbf{timeout sarà}:
+\[
+  \text{Time-out}=\text{Estimated}+4\times\text{ Dev}
+\]
+
+\subsubsection{Flow control}
+Il motivo principale della perdita di messaggi è la mancanza di
+sincronizzazione, un tempo era molto probabile ricevere messaggi corrotti,
+ora la perdita di messaggi è legata alla mancanza di buffer liberi di
+ricezione.
+
+Il \textbf{mittente} avrà un buffer di ricezione (TX buffer), così come
+il destinatario (RX buffer), nei quali i datagramm vengono ricevuti.
+
+Per garantire che vi siano sempre buffer di ricezione liberi sarà necessario
+comunicare all'interlocutore il numero di buffer allocati.
+
+All'interno dell'header \textbf{TCP} vi sarà un campo \textbf{receive window}
+che contiene la grandezza dei buffer di ricezione del destinatario.
+
+I messaggi saranno inviati o alla ricezione di un \textbf{ACK} o alla scadenza
+del \textbf{TIMEOUT}.
+
+In generale, \emph{UDP} utilizza un approccio ottimistico per cui in una
+comunicazione fluida è più efficiente rispetto a \emph{TCP} che si accerta
+che ogni messaggio venga ricevuto correttamente.
+
+\subsubsection{Congestion control}
+Il \textbf{TCP} implementa anche un controllo di congestione oltre al \emph{
+flow control}, è necessario per ridurre la perdita di messaggi sulla reta,
+ma non da parte del destinatario, ma dai \emph{router} che implementano lo
+\emph{store and forward}.
+
+Quindi è il \emph{router} che rileva la congestione di dati (mancanza di
+buffer) e rallenta la ricezione di dati.
+
+Il congestion control avviene in tre fasi:
+\begin{enumerate}
+  \item \textbf{slow start}: invio di pochi bytes;
+  \item dopo l' \textbf{ACK}, raddoppio la quantità di datagrammi inviati;
+  \item quindi se i dati inviati diventano troppo grandi, si torna ad un
+    passaggio indietro e si aumentano a passi i dati inviati.
+\end{enumerate}
+
+\section{Application layer}
+L'ultimo livello di \emph{networking} è l'implementazione a livello
+applicativo.
+Per cui si rende necessaria un interfaccia per applicazione, \textbf{API}, si
+userà lo standard \textbf{POSIX}; si utilizzano i \textbf{socket}.
+
+\paragraph{File descriptor:}
+un processo che permette di interagire con il \textit{file system}, permettono
+di stabilire un collegamento tra i buffer a livello aplicativo e quelli di
+sistema.
+
+Il file descriptor (\textbf{fd}) creato, per esempio, alla chiamata di \textit{open},
+sarà un \textbf{int} che rappresenta l'indice del file nell'array dei file
+in utilizzo.
+
+Nel caso di errore, \emph{fd} sarà un numero negativo.
+
+\subsection{System calls sui socket di tipo datagram}
+Ogni \textbf{system call} è bloccante, nel caso di un errore il programma si
+ferma.
+Si possono riprogrammare le \emph{syscall} per renderle non bloccanti, con la
+gestione del messaggio di errore \textbf{E\_WOULDBLOCK}.
+
+\subsubsection{Socket system call}
+Quindi alla \textit{syscall} su \textbf{socket}, verrà creato un nuovo \emph{
+fd}.
+
+\begin{lstlisting}[caption=Esempio di syscall a socket]
+int fd = socket(int domain, int type, int protocol);
+\end{lstlisting}
+
+Dove:
+\begin{itemize}
+  \item \textbf{domain:}
+    \begin{itemize}
+      \item \emph{AF\_UNIX}: locale, nomi di file;
+      \item \emph{AF\_INET}: $IPV4$;
+      \item \emph{AF\_INET6}: $IPV6$;
+    \end{itemize}
+  \item \textbf{type:}
+    \begin{itemize}
+      \item \emph{SOCK\_DGRAM}: $IPv4$;
+      \item \emph{SOCK\_STREAM}: $IPv6$;
+      \item \emph{SOCK\_RAW}: utilizzato per saltare i passaggi di trasporto e
+        di rete fino a \emph{datalink};
+    \end{itemize}
+  \item \textbf{protocol:} esiste uno ed uno solo per type, è possibile
+    lasciare il predefinito ($0$).
+\end{itemize}
+
+\subsubsection{Bind system call}
+La \emph{syscall} \textbf{bind} è necessaria per associare un indirizzo ad un
+\textbf{socket}.
+
+\begin{lstlisting}[caption=Esempio di syscall a bind]
+int fd = bind(int fd, const struct sockaddr*addr, socklen_t addrlen);
+\end{lstlisting}
+
+Dove:
+\begin{itemize}
+  \item \textbf{fd:} il file descriptor del \emph{socket} riferimento;
+  \item \textbf{addr:} alloca lo spazio necessario per salvare il numero
+    di $bit$ corretti;
+  \item \textbf{addrlen:} la lunghezza dell'indirizzo da salvare (o del nome
+    del file).
+\end{itemize}
+
+\subsubsection{Send to system call}
+\begin{lstlisting}[caption=Esempio di syscall sendto]
+ssize_t sendto(int fdA, const void*buf, size_t len, int flags, const struct sockaddr*addr, socklen_t addrlen);
+\end{lstlisting}
+
+Dove:
+\begin{itemize}
+  \item \textbf{fdA:} file descriptor del socket da cui inviare;
+  \item \textbf{buf:} buffer da cui inviare;
+  \item \textbf{len:} lunghezza del messaggio;
+  \item \textbf{flags:} ;
+  \item \textbf{sockaddr:} indirizzo del socket (comprensivo di porta);
+  \item \textbf{socklen:} lunghezza del socket;
+\end{itemize}
+
+\subsubsection{Receive from system call}
+\begin{lstlisting}[caption=Esempio di syscall receivefrom]
+ssize_t recvfrom(int fdB, const void*buf, size_t len, int flags, struct sockaddr*addr, socklen_t addrlen);
+\end{lstlisting}
+
+Dove:
+\begin{itemize}
+  \item \textbf{fdA:} file descriptor del socket in cui ricevere;
+  \item \textbf{buf:} buffer nel quale scrivere il messaggio;
+  \item \textbf{len:} lunghezza del messaggio;
+  \item \textbf{flags:} ;
+  \item \textbf{sockaddr:} indirizzo del socket (comprensivo di porta del
+    sender);
+  \item \textbf{socklen:} lunghezza del socket;
+\end{itemize}
+
+\subsubsection{Connect system call}
+\begin{lstlisting}[caption=Esempio di syscall connect]
+int recvfrom(int fdA, const struct sockaddr*addr, socklen_t len);
+\end{lstlisting}
+
+\subsubsection{Listen system call}
+\begin{lstlisting}[caption=Esempio di syscall listen]
+int recvfrom(int fdB, int backlog);
+\end{lstlisting}
+
+\subsubsection{Accept system call}
+\begin{lstlisting}[caption=Esempio di syscall accept]
+int accept(int fdB, 2 parametri);
+\end{lstlisting}
+Il ritorno della funzione è un \textbf{fd}.
+Per ogni successo il server associa un nuovo socket.
+
+\subsection{Esempio di scambio di datagrammi}
+Il server ed il client creano un socket di tipo \emph{datagram}, il server
+esegue un \emph{bind}.
+Il client invece esegue una \emph{syscall} di tipo \textbf{sendto}, il server
+utilizza \textbf{recvfrom}, etc..
+
+\subsection{Esempio di scambio di stream}
+Il server ed il client creano socket di tipo \emph{stream}, il server esegue
+la \emph{bind}, il client la \emph{connect}, per ogni \emph{send} e
+\emph{receive} non è più necessario lo scambio di indirizzo.
+Il server deve attivare \textbf{listen} prima dell'arrivo della \emph{connect}.
+
+\section{Modello banda latenza}
+$n=$numero di byte da inviare
+\[
+  D(n)=L_0+\dfrac{n}{B}
+\]
+
+\section{Protocollo a livello applicativo: DNS}
+Lo scopo è di trasformare gli indirizzi numerici in stringhe.
+Lo scopo della funzione \emph{addrinfo()} è di trasformare appunto l'indirizzo.
+
+Il protocollo prevede che ci sia un \emph{client} che invia una richiesta ed
+un \emph{server} che risponda, basato sul protocollo di trasporto \textbf{UDP},
+è possibie utilizzare il protocollo \textbf{TCP} per poter inviare datagrammi
+più estesi.
+
+La porta standard è la $53$.
+
+I datagrammi (serie da $32bit$, con dimensione massima di $512byte$) inviati
+sono composti da:
+
+\begin{tabular}{|c|c|}
+                                               \hline
+  ident (16bit)        & FLAG(16bit)        \\ \hline
+  \#domande             & \#risposte          \\ \hline
+  \#record autoritativi & \#record aggiuntivi \\ \hline
+                       &                    \\ \hline
+                       &                    \\ \hline
+                       &                    \\ \hline
+                       &                    \\ \hline
+                       &                    \\ \hline
+\end{tabular}
+
+Il \emph{\#domande} indica quante righe precedono le \emph{risposte}.
+I record autoratitativi seguono le risposte, a loro volta sono seguiti dai
+dai record aggiuntivi.
+
+\subsection{Tipi di indirizzi}
+\begin{itemize}
+  \item \textbf{Tipo A:} indirizzo standard (es. www.dibris.unige.it);
+  \item \textbf{Tipo MX:} indirizzo del server di posta elettronica;
+  \item \textbf{Tipo NS:} informazione interna del protocollo \emph{DNS},
+    simile a \textbf{MX}, indica il server \textbf{DNS} del dominio;
+  \item \textbf{Tipo CNAME:} la \textbf{C} rappresenta \textbf{Canonical},
+    possono corrispondere più indirizzi alla stessa macchina, \emph{CNAME}
+    serve per identificare la macchina interpellata.
+\end{itemize}
+
+\subsection{Risoluzione dei nomi}
+Per ottenere l'indirizzo di un qualunque server collegato alla rete si
+utilizza una struttura gerarchica.
+
+\begin{enumerate}
+  \item \textbf{Root}: conosce tutti i domini \emph{top level};
+  \item \textbf{Top level:} i domini top level gerarchicamente sono i figli di
+    root, esempio: \emph{it,com,uk etc.};
+  \item \textbf{Autoritativi:} figli di \emph{top level}, esempio: \emph{unige,
+    google, amazon}, un livello \emph{autoritativo} può avere come figlio
+    un altro livello \emph{autoratitativo}, fino a circa $127$ livelli;
+\end{enumerate}
+
+\subsection{Algoritmo ricorsivo}
+Il client invia una richiesta al suo server in locale, il quale va a vedere
+l'indirizzo, quindi contatta il server root perchè non ha abbastanza
+informazioni per risolvere la richiesta.
+
+Quindi il server \emph{root} inoltra la stessa richiesta al \emph{top level}
+domain corretto, il quale a propria volta invia la medesima richiesta al server
+\emph{autoritativo} e così via.
+
+Una volta terminata la ricorsione l'indirizzo del server contenuto nell'ultimo
+dominio autoratitativo viene mandato indietro fino al client seguendo la
+chiamata ricorsiva (risposta autoritativa).
+
+\subsection{Algoritmo iterativo}
+Il client invia la richiesta al suo server in locale, che se non riesce a
+rispondere, il client reindirizza la richiesta al server root, questo rimbalzo
+si ripete fintanto che il dominio corretto non risponde (risposta
+autoritativa).
+
+\subsection{Algoritmo ibrido}
+I server che contengono le informazioni sono contattati in maniera iterativa,
+i local servers invece supportano l'algoritmo ricorsivo.
+
+Il server in locale piò dare una risposta non autoritativa se il nome è
+salvato in cache.
+
+\section{Protocollo NTP}
+Il protocollo \textbf{NTP} (Network Time Protocol) si basa sulla gestione del
+tempo, necessario per la sincronizzazione di orologi nella rete.
+
+La versione attuale è la $4$ ed è definita nel protocollo $RFC5905$.
+
+
+Il problema che affronta questo protocollo è relativo agli orologi locali dei
+calcolatori che si connettono tra di loro.
+
+
+Il protocollo \textbf{NTP} utilizza $4$ timestamp:
+\begin{itemize}
+  \item $t_1$: il tempo del momento in cui viene inviato il messaggio
+    (client);
+  \item $t_2$: il tempo del momento in cui viene ricevuto il messaggio
+    (host);
+  \item $t_3$: il tempo del momento in cui viene inviato il messaggio
+    (host);
+  \item $t_4$: il tempo del momento in cui viene ricevuto il messaggio
+    (client).
+\end{itemize}
+
+Quindi a differenza dei protocolli \textbf{UTP} e \textbf{TCP} individuo $2$
+timestamp in più.
+
+Il \emph{Round Trip Time} sarà dato da:
+\[
+  \text{RTT}=(t_4-t_1)-(t_3-t_2)
+\]
+
+
+La \textbf{epoca} è lo standard cui si fa riferimento secondo cui dal punto
+di vista dei calcolatori comincia il tempo (1 gennaio 1970).
+
+Considerando la precisione teorica degli orologi a disposizione dei calcolatori
+, i server \textbf{NTP} hanno una struttura gerarchica:
+\begin{itemize}
+  \item \textbf{livello 0:} orologio atomico;
+  \item \textbf{livello 1:} macchina collegata direttamente allo strato $0$;
+  \item \textbf{livello 2:} macchine collegato allo strato $1$, i livelli
+    successivi sono ricorsivi.
+\end{itemize}
+Ognuna di queste macchine è sia client, che server.
+
+\chapter{Posta elettronica}
+Una delle caratteristiche principali della posta elettronica è l' \textit{
+asincronicità}.
+
+\section{SMTP}
+Le email utilizzano diverse protocolli tra cui \textbf{SMTP}, definito per la
+prima volta nell' \textbf{RFC 821} (che risale al 1980) ed espanso nell'
+\textbf{RFC 5321}.
+
+Utilizza una codifica \textbf{ASCII a 7bit}, la porta predefinita è la $25$ ed
+utilizza il protocollo \textbf{TCP}.
+
+\subsection{Protocollo Best Effort}
+L'applicazione del protocollo \textit{Best Effort} nell'ambito del protocollo
+\emph{SMTP} implica un salvataggio da parte del mittente dei dati da inviare
+fintanto che non si è certi che il messaggio sia arrivato, oppure alla
+scadenza di un timeout.
+
+\subsection{Funzionamento}
+Il mittente (client) invia il messaggio ad un server, quindi il client alla
+fine dell'invio può chiudere la connessione.
+A questo punto il server che ha ricevuto il messaggio lo invia ad un altro
+server, se necessario, con l'obiettivo di spostare il messaggio al server
+del ricevente, in questo punto termina il compito del protocollo \textbf{SMTP},
+successivamente il ricevente riceve il messaggio nel momento
+in cui apre una connessione con il server.
+
+\subsubsection{Three way connection}
+Usa la \emph{three way connection}, una volta stabilita la connessione (dopo il
+segnale di ACK)
+
+\begin{enumerate}
+  \item \textbf{SERVER:} invia la stringa \emph{220 server@example.com};
+  \item \textbf{CLIENT:} invia la stringa \emph{HELO server@example.it}, oppure
+    la stringa \emph{EHLO server@example.it} per connessioni sicure;
+  \item \textbf{SERVER:} invia la stringa \emph{250 client@example.it};
+  \item \textbf{CLIENT:} invia la stringa \emph{MAIL FROM: client@example.it};
+  \item \textbf{SERVER:} invia la stringa \emph{250 client@example.it server
+    ok};
+  \item \textbf{CLIENT:} invia la stringa \emph{RECPT TO: recipient@example.it}
+    ;
+  \item \textbf{SERVER:} invia la stringa \emph{250 recipient@example.it 
+    recipient OK};
+  \item \textbf{CLIENT:} invia la stringa contenente \emph{DATA};
+  \item \textbf{SERVER:} risponde con $354$;
+  \item \textbf{CLIENT:} invia il testo del \textbf{messaggio} che si conclude
+    con un newline ed un punto;
+  \item \textbf{SERVER:} risponde con \emph{250} segnalando la fine della
+    comunicazione;
+  \item \textbf{CLIENT:} invia la stringa \emph{quit}.
+\end{enumerate}
+
+\subsubsection{Formato del messaggio}
+Il messaggio è composto da $72$ caratteri per riga, le sequenze di caratteri
+\emph{<CR><LF>} costituiscono un a capo; lo \emph{header} termina con due
+a capi di seguito.
+
+Lo \emph{header} è composto di chiavi, alcune sono ridondanti rispetto ai dati
+scambiati secondo il protocollo \textbf{SMTP}, difatti i dati esposti nel
+corpo del messaggio sono puramente a scopo informativo.
+\begin{itemize}
+  \item subject;
+  \item from;
+  \item to;
+  \item cc;
+  \item bcc;
+  \item date
+\end{itemize}
+
+
+I messaggi possono essere codificati in base $64$ Radix, come caratteri
+comprende le cifre, le lettere maiuscole e minuscole, $\_$ ed $=$.
+
+Quindi ad ogni $6bit$ del messaggio corrisponde $1$ carattere Radix.
+
+La prima versione del protocollo \textbf{SMTP} utilizzava la codifica \emph{
+uuencode}.
+
+
+Un evoluzione del Radix 64 utilizza i MIME, per esempio un \emph{MIME/TYPE}
+\emph{text/ascii} indica che devo codificare un file di testo formato ascii.
+
+\textbf{MAIL USER AGENT}
+
+\textbf{POP3}
+
+\textbf{TCP/IP}
+
+\textbf{IMAP}
+
+\section{FTP}
+Definito ne \textbf{RFC 114} nel 1971, prima del \textbf{TCP/UDP},
+successivamente ne \textbf{RFC 765} e \textbf{RFC 959}, la versione
+attualmente in uso.
+
+Viene usata la porta \textbf{TCP/21} su cui viene aperto il \emph{canale di
+controllo}, attraverso cui il cliente può mandare una serie di comandi al
+server.
+
+La porta \textbf{TCP/20} viene usata per la connessione dati, ovvero per
+scambiare i file.
+
+Solitamente viene eseguita una forma di autenticazione.
+
+Esistono una seria di comandi:
+\begin{itemize}
+  \item LIST;
+  \item CD;
+  \item PORT;
+  \item LCD;
+  \item RETR;
+  \item STOR;
+  \item DELE.
+\end{itemize}
+
+Nell' \textbf{RFC 1579} viene definito un nuovo parametro, il \textbf{PASV}
+che abilita la modalità passiva.
+
+\subsection{Funzionamento}
+Prima viene aperta la connessione attraverso il canale di controllo, quindi
+vengono inviati i dati di autenticazione formattati come:\newline
+USER username\newline
+PASS password\newline
+
+Nel caso di successo il server riponde con $200OK$.
+
+
+Per scaricare un file è necessario avere informazioni sullo stesso, quindi
+il client crea un socket, ne invia le informazioni al server, quindi il
+server invia il file.
+Alla fina del trasferimento dati viene chiusa la connessione.
+
+\subsection{FTP anonimo}
+Se come utente passiamo \textbf{USER anonymous}, allora parliamo di FTP
+anonimo, il sistema non richiede password nonostante venga data la
+possibilità per identificare l'utente, attraverso l'email per esempio.
+
+\chapter{HTTP}
+Definito per la prima volta nel $1977$, nell' \textbf{RFC 2068}, poi nel $1999$
+nell' \textbf{RFC 2616} e nel $2015$ nell' \textbf{RFC 7230}.
+
+Un aspetto fondamentale del protocollo HTTP sono gli \textbf{URL} (Uniform
+Resource Identifier) la cui sintassi è:
+
+\emph{http\_URL = "http:" "//" host [ ":" port ] [ abs\_path ]}
+
+\section{Richiesta}
+I metodi con cui si possono accedere alle risore da appendere ad un URL sono:
+\begin{itemize}
+  \item GET: Transfer a current representation of the target resource;
+  \item HEAD: Same as GET, but only transfer the status line and header
+    section;
+  \item POST: Perform resource-specific processing on the    request payload;
+  \item PUT:  Replace all current representations of the target resource with
+    the request payload;
+  \item DELETE: move all current representations of the target resource;
+  \item CONNECT: ablish a tunnel to the server identified by the target
+    resource;
+  \item OPTIONS: describe the communication options for the target resource;
+  \item TRACE: perform a message loop-back test along the path to the target
+    resource.
+\end{itemize}
+
+Questi metodi sono inclusi nei parametri inviati nell'header, che oltre al
+metodo include: l'url a cui si vuole accedere e la versione del protocollo
+HTTP in utilizzo.
+
+\section{Risposta}
+\subsection{Header}
+La risposta di un server ad una richiesta http conterrà un header che include
+lo stato che può essere:
+\begin{itemize}
+     \item 1xx: Informational - Request received, continuing process;
+     \item 2xx: Success - The action was successfully received, understood, and
+       accepted;
+     \item 3xx: Redirection - Further action must be taken in order to complete
+       the request;
+     \item 4xx: Client Error - The request contains bad syntax or cannot be
+       fulfilled;
+     \item 5xx: Server Error - The server failed to fulfill an apparently valid
+       request;
+\end{itemize}
+
+L'header del protocollo HTTP 1.0 inoltre conterrà \emph{Connection Close},
+ovvero la segnalazione che la connessione è stata chiusa, dal protocollo
+HTTP 1.1 questa risposta non è più inclusa, ma la gestione delle connessioni
+aperte sarà implementata nel server con un meccanismo di timeout.
+
+\subsection{Body}
+Ogni risposta conterrà un body, ovvero il contenuto della risposta.
+
+\section{Proxy}
+I server proxy sono responsabili della cache, nell'header di richiesta è
+presente il parametro \emph{IfModifiedSince} che contiene una data nel formato
+GMT, nell'header di risposta viene mandato il parametro \emph{LastModified},
+è il server che confronta le date e valuta se generare una nuova richiesta.
