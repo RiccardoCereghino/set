@@ -475,3 +475,85 @@ Ricapitolando, il ciclo di vita di un processo:
 \[
   T_ { \text{RESP}}=T_{ \text{First Run}}-T_{ \text{Arrival}}
 \]
+
+\section{Dischi}
+I dischi fissi lavorano a blocchi, solitamente di $512 bytes"$, se si vuole
+modificare un bit si modifica l'intero settore, per cui alla richiesta di
+modifica viene richiesto l'intero blocco, viene effettuata la modifica e viene
+riscritto su disco.
+
+
+Questa suddivisione è necessaria per rendere meno costosa la gestione degli
+indirizzi su disco.
+
+Per gli hard disk il tempo di accesso alla memoria dipende da:
+\begin{itemize}
+  \item tempo di spostamento della testina nella posizione giusta;
+  \item tempo di rotazione per accedere al settore giusto;
+  \item tempo di trasferimento dei dati;
+\end{itemize}
+
+per cui il tempo totale sarà dato da:
+\[T_{\text{TOT}}=T_{\text{SEEK}}+T_{\text{ROT}}+T_{\text{TRASF}}\]
+
+Questo ragionamento non si applica agli \textbf{SSD}.
+
+\subsection{Formattazione}
+La formattazione riserva una parte dei blocchi per i dati, altra per i bitmap
+dati.
+
+Ad ogni file su disco corrisponde una struttura dati chiamata \textbf{inode},
+per sapere quando sono usati.
+
+Un disco è solitamente composto da:
+\begin{itemize}
+  \item superblocco;
+  \item tabella inode;
+  \item bitmap inode;
+  \item bitmap blocchi dati;
+  \item dati.
+\end{itemize}
+
+L'inode contiene i dati:
+\begin{itemize}
+  \item proprietario;
+  \item gruppo;
+  \item permessi;
+  \item dimensione del file;
+  \item dati;
+  \item puntatori ai blocchi dati.
+\end{itemize}
+
+Esistono tot tipi di file in \emph{POSIX}:
+\begin{itemize}
+  \item file "normali";
+  \item cartelle;
+  \item link simbolico (soft link).
+\end{itemize}
+
+L'accesso ai file all'interno di una cartella sfrutta l'indice della cartella
+salvata in inode e ne cacha i risultati.
+
+Un hard link punta una cartella o un file usando un nome diverso, un soft link
+invece influisce sulla risoluzione del percorso.
+
+La \emph{root} usa un filesystem.
+
+Esistono due file speciali chiamati: \textbf{block device} e \textbf{char 
+device}, vengono creati al collegamento di un disco e servono per localizzare
+la root del dispositivo.
+
+\subsubsection{Permessi}
+L'id dell'utente ($UID$) è salvato in \emph{/utc/passwd}, oltre a vari dati
+relativi alle informazioni tipo il nome e le variabili legate all'utente,
+le password sono salvate in \emph{/etc/shadow}.
+
+L'UID viene usato dal kernel per determinare i permessi sulle system calls.
+
+In realtà esistono $3$ UID diversi: effective, real e saved.
+
+Per determinare i permessi su un file vengono usati $3$ gruppi da $3$ bit nei
+quali vengono salvati le informazioni di lettura, scrittura ed esecuzione per
+tutti, i gruppi e l'utente.
+Prima vengono risolti i permessi rispetto al proprietario delll'utente, poi
+per il gruppo infine per tutti.
